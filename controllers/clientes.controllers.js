@@ -1,4 +1,5 @@
 const ClientesModel = require("../models/clientesSchema");
+const ReservasModel = require("../models/reservasSchema");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
@@ -18,10 +19,10 @@ const registroCliente = async (req, res) => {
       return;
     }
     const newCliente = new ClientesModel(req.body);
-    const newReservas = ReservasModel({ clienteId: newCliente._id });
+    const newReservas = ReservasModel({ idCliente: newCliente._id });
     const salt = bcrypt.genSaltSync(10);
     newCliente.idReservas = newReservas._id;
-    newCliente.password = bcrypt.hashSync(req.body.password, salt);
+    newCliente.password = bcrypt.hashSync(req.body.contrasenia, salt);
     const messageResponse = await welcomeMessage(
       newCliente.email,
       newCliente.nombre
