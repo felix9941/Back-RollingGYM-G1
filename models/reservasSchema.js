@@ -1,12 +1,10 @@
 const { Schema, model, Types } = require("mongoose");
 
 const ReservasSchema = new Schema({
-  idClase: {
-    type: Types.ObjectId,
-  },
   idCliente: {
     type: Types.ObjectId,
   },
+  clases: [],
 });
 
 ReservasSchema.methods.toJSON = function () {
