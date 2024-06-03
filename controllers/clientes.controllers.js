@@ -36,7 +36,7 @@ const registroCliente = async (req, res) => {
     const newReservas = ReservasModel({ idCliente: newCliente._id });
     const salt = bcrypt.genSaltSync(10);
     newCliente.idReservas = newReservas._id;
-    newCliente.password = bcrypt.hashSync(req.body.contrasenia, salt);
+    newCliente.contrasenia = bcrypt.hashSync(req.body.contrasenia, salt);
     const messageResponse = await welcomeMessage(
       newCliente.email,
       newCliente.nombre
