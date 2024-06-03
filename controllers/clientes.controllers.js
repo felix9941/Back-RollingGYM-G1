@@ -141,10 +141,29 @@ const cambioEstadoCliente = async (req, res) => {
   }
 };
 
+const pagoCuotaCliente = async (req, res) => {
+  try {
+    const updatedCliente = await ClientesModel.findByIdAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      { new: true }
+    );
+    res
+      .status(201)
+      .json({ message: "Vencimiento y Plan actualizados", updatedCliente });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "No se pudo actualizar el vencimiento y plan", error });
+  }
+};
+
 module.exports = {
   registroCliente,
   loginCliente,
   consultarClientes,
   consultarClientesHabilitados,
   cambioEstadoCliente,
+  pagoCuotaCliente,
 };
