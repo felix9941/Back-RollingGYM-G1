@@ -165,6 +165,25 @@ const pagoCuotaCliente = async (req, res) => {
   }
 };
 
+const vencimientoCuotaCliente = async (req, res) => {
+  try {
+    const updatedCliente = await ClientesModel.findByIdAndUpdate(
+      { _id: req.params.id },
+      {
+        plan: "ninguno",
+        cuotaPaga: false,
+      },
+      { new: true }
+    );
+    res
+      .status(201)
+      .json({ message: "El cliente ya no esta abonado", updatedCliente });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "No se pudo desabonar al cliente", error });
+  }
+};
+
 module.exports = {
   registroCliente,
   loginCliente,
@@ -172,4 +191,5 @@ module.exports = {
   consultarClientesHabilitados,
   cambioEstadoCliente,
   pagoCuotaCliente,
+  vencimientoCuotaCliente,
 };
