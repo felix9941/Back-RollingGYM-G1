@@ -10,7 +10,7 @@ const ProfesoresSchema = new Schema({
   apellido: {
     type: String,
     required: true,
-    maxlength: [30, "El apellido no puede tener más de 30 caracteres"],
+    maxlength: [50, "El apellido no puede tener más de 50 caracteres"],
     minlength: [2, "El apellido no puede tener menos de 2 caracteres"],
   },
   email: {
