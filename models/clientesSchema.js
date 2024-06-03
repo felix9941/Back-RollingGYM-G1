@@ -32,6 +32,10 @@ const ClientesSchema = new Schema({
     maxlength: [50, "La contraseña no puede tener más de 50 caracteres"],
     minlength: [8, "La contraseña no puede tener menos de 8 caracteres"],
   },
+  plan: {
+    type: String,
+    default: "ninguno",
+  },
   deleted: {
     type: Boolean,
     default: true,
@@ -41,7 +45,7 @@ const ClientesSchema = new Schema({
     default: false,
   },
   expiracionCuota: {
-    type: Date,
+    type: Number,
     default: Date.now(),
   },
   idReservas: {

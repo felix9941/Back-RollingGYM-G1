@@ -40,6 +40,48 @@ const registroCliente = async (req, res) => {
   }
 };
 
+const loginCliente = async (req, res) => {
+  try {
+    const clienteExist = await ClientesModel.findOne({ email: req.body.email });
+
+    if (!clienteExist) {
+      res.status(404).json({ message: "Cliente no encontrado" });
+      return;
+    }
+
+    const validContrasenia = await bcrypt.compare(
+      req.body.contrasenia,
+      clienteExist.contrasenia
+    );
+
+    if (!validContrasenia) {
+      res.status(401).json({ message: "Contraseña incorrecta" });
+      return;
+    }
+
+    const payload = {
+      cliente: {
+        id: clienteExist._id,
+        email: clienteExist.email,
+        idReservas: clienteExist.idReservas,
+        plan: clienteExist.plan,
+      },
+    };
+
+    const token = jwt.sign(payload, process.env.SECRET_KEY_JWT);
+
+    res.status(200).json({
+      message: "Inicio de sesión exitoso",
+      token,
+      role: "cliente",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al iniciar sesión", error });
+  }
+};
+
 module.exports = {
   registroCliente,
+  loginCliente,
 };
