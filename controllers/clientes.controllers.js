@@ -19,6 +19,24 @@ const consultarClientes = async (req, res) => {
   }
 };
 
+const consultarClientesHabilitados = async (req, res) => {
+  try {
+    const clientes = await ClientesModel.find({ deleted: false });
+    if (!clientes.length) {
+      res.status(404).json({ message: "No hay clientes habilitados" });
+      return;
+    }
+    res
+      .status(200)
+      .json({ message: "Clientes habilitados encontrados", clientes });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "Error al consultar los clientes habilitados", error });
+  }
+};
+
 const registroCliente = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -95,8 +113,38 @@ const loginCliente = async (req, res) => {
   }
 };
 
+const cambioEstadoCliente = async (req, res) => {
+  try {
+    const cliente = await ClientesModel.findById(req.params.id);
+    if (!cliente) {
+      res.status(404).json({ message: "El cliente no existe" });
+      return;
+    }
+    if (cliente.deleted === true) {
+      cliente.deleted = false;
+      await cliente.save();
+      res
+        .status(400)
+        .json({ message: "Cliente habilitado con exito", cliente });
+      return;
+    }
+    cliente.deleted = true;
+    await cliente.save();
+    res
+      .status(200)
+      .json({ message: "Cliente deshabilitado con éxito", cliente });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "Error al cambiar el estado del cliente", error });
+  }
+};
+
 module.exports = {
   registroCliente,
   loginCliente,
   consultarClientes,
+  consultarClientesHabilitados,
+  cambioEstadoCliente,
 };

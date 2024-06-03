@@ -5,6 +5,8 @@ const {
   registroCliente,
   loginCliente,
   consultarClientes,
+  consultarClientesHabilitados,
+  cambioEstadoCliente,
 } = require("../controllers/clientes.controllers");
 const router = express.Router();
 
@@ -51,6 +53,8 @@ router.post(
   registroCliente
 );
 router.post("/login", loginCliente);
+router.post("/:id", cambioEstadoCliente);
+router.get("/habilitados", consultarClientesHabilitados);
 router.get("/", consultarClientes);
 
 module.exports = router;
