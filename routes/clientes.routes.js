@@ -8,6 +8,7 @@ const {
   consultarClientesHabilitados,
   cambioEstadoCliente,
   pagoCuotaCliente,
+  vencimientoCuotaCliente,
 } = require("../controllers/clientes.controllers");
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.post(
   ],
   pagoCuotaCliente
 );
+router.post("/vencimiento/:id", vencimientoCuotaCliente);
 router.post(
   "/register",
   [
