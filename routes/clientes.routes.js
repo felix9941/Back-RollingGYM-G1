@@ -4,6 +4,7 @@ const { check } = require("express-validator");
 const {
   registroCliente,
   loginCliente,
+  consultarClientes,
 } = require("../controllers/clientes.controllers");
 const router = express.Router();
 
@@ -49,6 +50,7 @@ router.post(
   ],
   registroCliente
 );
-
 router.post("/login", loginCliente);
+router.get("/", consultarClientes);
+
 module.exports = router;

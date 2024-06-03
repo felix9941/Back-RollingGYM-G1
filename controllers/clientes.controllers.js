@@ -5,6 +5,20 @@ const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const { welcomeMessage } = require("../middleware/messages");
 
+const consultarClientes = async (req, res) => {
+  try {
+    const clientes = await ClientesModel.find();
+    if (!clientes.length) {
+      res.status(404).json({ message: "No hay clientes registrados" });
+      return;
+    }
+    res.status(200).json({ message: "Clientes encontrados", clientes });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al consultar los clientes", error });
+  }
+};
+
 const registroCliente = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -84,4 +98,5 @@ const loginCliente = async (req, res) => {
 module.exports = {
   registroCliente,
   loginCliente,
+  consultarClientes,
 };
