@@ -7,9 +7,19 @@ const {
   consultarClientes,
   consultarClientesHabilitados,
   cambioEstadoCliente,
+  pagoCuotaCliente,
 } = require("../controllers/clientes.controllers");
 const router = express.Router();
 
+router.post(
+  "/pago/:id",
+  [
+    check("plan", "Campo plan vacio").notEmpty(),
+    check("cuotaPaga", "Campo cuotaPaga vacio").notEmpty(),
+    check("expiracionCuota", "Campo expiracionCuota vacio").notEmpty(),
+  ],
+  pagoCuotaCliente
+);
 router.post(
   "/register",
   [
