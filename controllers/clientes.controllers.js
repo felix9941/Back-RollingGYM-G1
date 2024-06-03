@@ -143,9 +143,15 @@ const cambioEstadoCliente = async (req, res) => {
 
 const pagoCuotaCliente = async (req, res) => {
   try {
+    const { plan, cuotaPaga, expiracionCuota } = req.body;
+    const expiracionCuotaMilisegundos = new Date(expiracionCuota).getTime();
     const updatedCliente = await ClientesModel.findByIdAndUpdate(
       { _id: req.params.id },
-      req.body,
+      {
+        plan,
+        cuotaPaga,
+        expiracionCuota: expiracionCuotaMilisegundos,
+      },
       { new: true }
     );
     res
