@@ -20,12 +20,13 @@ class Servidor {
   routes() {
     this.app.use("/api/prueba", require("../routes/prueba.routes"));
     this.app.use("/api/clientes", require("../routes/clientes.routes"));
+    this.app.use("/api/profesores", require("../routes/profesores.routes"));
     this.app.use("/api/reservas", require("../routes/reservas.routes"));
   }
 
   listen() {
     this.app.listen(3002, () => {
-      console.log("Server is running on port", 3002);
+      console.log("servidor levantado en el puerto:", 3002);
     });
   }
 }
