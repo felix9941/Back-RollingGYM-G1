@@ -41,7 +41,7 @@ router.post(
       "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres"
     ).isStrongPassword({
       minLength: 8,
-      maxLength: 50,
+      maxLength: 100,
       minLowercase: 1,
       minUppercase: 1,
       minNumbers: 1,
