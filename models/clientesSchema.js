@@ -54,7 +54,7 @@ const ClientesSchema = new Schema({
 });
 
 ClientesSchema.methods.toJSON = function () {
-  const { __v, password, ...cliente } = this.toObject();
+  const { __v, contrasenia, ...cliente } = this.toObject();
   return cliente;
 };
 
