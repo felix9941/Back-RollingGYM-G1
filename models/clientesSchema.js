@@ -45,7 +45,7 @@ const ClientesSchema = new Schema({
     default: false,
   },
   expiracionCuota: {
-    type: Date,
+    type: Number,
     default: Date.now(),
   },
   idReservas: {
