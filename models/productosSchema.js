@@ -6,5 +6,10 @@ const ProductosSchema = new Schema({
   deleted: { type: Boolean, default: false },
 });
 
+ProductosSchema.methods.toJSON = function () {
+  const { __v, ...producto } = this.toObject();
+  return producto;
+};
+
 const ProductsModel = model("productos", ProductosSchema);
 module.exports = ProductsModel;
