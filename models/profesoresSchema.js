@@ -20,7 +20,7 @@ const ProfesoresSchema = new Schema({
     maxlength: [50, "El mail no puede tener más de 50 caracteres"],
     minlength: [10, "El mail no puede tener menos de 10 caracteres"],
   },
-  celular: {
+  telefono: {
     type: Number,
     required: true,
     maxlength: [10, "El telefono debe tener 10 numeros"],
@@ -38,7 +38,6 @@ const ProfesoresSchema = new Schema({
   },
   foto: {
     type: String,
-    required: true,
     default:
       "https://res.cloudinary.com/dtnqgjjyk/image/upload/v1717465376/kpw6fimzrrmyk9mqrndu.jpg",
   },
