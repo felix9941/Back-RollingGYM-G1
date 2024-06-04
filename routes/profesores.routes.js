@@ -42,14 +42,14 @@ router.post(
     check("contrasenia", "Campo contraseña vacío").notEmpty(),
     check(
       "contrasenia",
-      "La contraseña debe tener entre 8 y 20 caracteres"
-    ).isLength({ min: 8, max: 20 }),
+      "La contraseña debe tener entre 8 y 30 caracteres"
+    ).isLength({ min: 8, max: 30 }),
     check(
       "contrasenia",
       "La contraseña debe contener números, símbolos, letras mayúsculas y minúsculas, y un mínimo de 8 caracteres"
     ).isStrongPassword({
       minLength: 8,
-      maxLength: 20,
+      maxLength: 100,
       minLowercase: 1,
       minUppercase: 1,
       minNumbers: 1,
