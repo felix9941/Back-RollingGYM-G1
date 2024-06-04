@@ -1,6 +1,20 @@
 const { validationResult } = require("express-validator");
 const ProductosModel = require("../models/productosSchema");
 
+const ObtenerProdHabilitados = async (req, res) => {
+  try {
+    const productosHabilitados = await ProductosModel.find({ deleted: false });
+    res
+      .status(200)
+      .json({ msg: "Productos habilitados obtenidos", productosHabilitados });
+  } catch (error) {
+    res.status(500).json({
+      msg: "ERROR. No se pudieron obtener los productos habilitados",
+      error,
+    });
+  }
+};
+
 const ConsultarProductos = async (req, res) => {
   try {
     const productos = await ProductosModel.find();
@@ -84,6 +98,7 @@ const EliminarProdFisicamente = async (req, res) => {
 };
 
 module.exports = {
+  ObtenerProdHabilitados,
   ConsultarProductos,
   CargarProducto,
   ActualizarProducto,
