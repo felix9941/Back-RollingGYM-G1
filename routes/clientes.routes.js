@@ -9,9 +9,38 @@ const {
   cambioEstadoCliente,
   pagoCuotaCliente,
   vencimientoCuotaCliente,
+  eliminarCliente,
+  editarCliente,
 } = require("../controllers/clientes.controllers");
 const router = express.Router();
 
+router.post(
+  "/editar/:id",
+  [
+    check("nombre", "Campo nombre vacio").notEmpty(),
+    check("nombre", "El nombre debe tener entre 2 y 50 caracteres").isLength({
+      min: 2,
+      max: 50,
+    }),
+    check("apellido", "Campo apellido vacio").notEmpty(),
+    check(
+      "apellido",
+      "El apellido debe tener entre 2 y 50 caracteres"
+    ).isLength({ min: 2, max: 50 }),
+    check("email", "Campo email vacio").notEmpty(),
+    check("email", "El email debe tener entre 10 y 70 caracteres").isLength({
+      min: 10,
+      max: 70,
+    }),
+    check("telefono", "Campo telefono vacio").notEmpty(),
+    check("telefono", "El telefono es incorrecto").isLength({
+      min: 10,
+      max: 10,
+    }),
+  ],
+  editarCliente
+);
+router.post("/estado/:id", cambioEstadoCliente);
 router.post(
   "/pago/:id",
   [
@@ -65,8 +94,8 @@ router.post(
   registroCliente
 );
 router.post("/login", loginCliente);
-router.post("/:id", cambioEstadoCliente);
 router.get("/habilitados", consultarClientesHabilitados);
 router.get("/", consultarClientes);
+router.delete("/", eliminarCliente);
 
 module.exports = router;
