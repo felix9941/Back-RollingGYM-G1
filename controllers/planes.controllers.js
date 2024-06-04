@@ -1,9 +1,9 @@
 const { validationResult } = require("express-validator");
-const ProductModel = require("../models/productSchema");
+const PlanesModel = require("../models/planesSchema");
 
 const consultarPlanes = async (req, res) => {
   try {
-    const planes = await ProductModel.find();
+    const planes = await PlanesModel.find();
     res.status(200).json({ msg: "Planes obtenidos", planes });
   } catch (error) {
     res.status(500).json({ msg: "ERROR. Planes no encontrados", error });
@@ -12,7 +12,7 @@ const consultarPlanes = async (req, res) => {
 
 const actualizarPlan = async (req, res) => {
   try {
-    const planActualizado = await ProductModel.findByIdAndUpdate(
+    const planActualizado = await PlanesModel.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
