@@ -45,7 +45,7 @@ const consultarClases = async (req, res) => {
 
 const consultarUnaClase = async (req, res) => {
   try {
-    const clase = await ClasesModel.findById(req.params);
+    const clase = await ClasesModel.findById(req.params.id);
     if (!clase) {
       return res.status(404).json({ message: "No se encontro la clase" });
     }
