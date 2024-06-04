@@ -96,6 +96,6 @@ router.post(
 router.post("/login", loginCliente);
 router.get("/habilitados", consultarClientesHabilitados);
 router.get("/", consultarClientes);
-router.delete("/", eliminarCliente);
+router.delete("/:id", eliminarCliente);
 
 module.exports = router;
