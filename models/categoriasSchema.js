@@ -9,10 +9,12 @@ const CategoriasSchema = new Schema({
     type: String,
     required: true,
   },
-  idPlanAlQuePertenece: {
-    type: Types.ObjectId,
-    required: true,
-  },
+  idPlanesAlQuePertenece: [
+    {
+      type: Types.ObjectId,
+      required: true,
+    },
+  ],
   deleted: {
     type: Boolean,
     default: false,
