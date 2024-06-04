@@ -5,7 +5,7 @@ const ClasesSchema = new Schema({
     type: String,
     required: true,
     maxlength: [50, "El nombre no puede tener más de 50 caracteres"],
-    minlength: [2, "El nombre no puede tener menos de 2 caracteres"],
+    minlength: [5, "El nombre no puede tener menos de 5 caracteres"],
   },
   dia: {
     type: String,
