@@ -55,7 +55,6 @@ router.post(
       minNumbers: 1,
       minSymbols: 1,
     }),
-    check("foto", "Campo foto vacío").notEmpty(),
   ],
   registroProfesor
 );
@@ -87,7 +86,6 @@ router.put(
       min: 10,
       max: 10,
     }),
-    check("foto", "Campo foto vacío").notEmpty(),
   ],
   actualizarProfesor
 );
