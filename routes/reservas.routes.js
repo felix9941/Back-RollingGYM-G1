@@ -1,7 +1,11 @@
 const express = require("express");
-const { crearReserva } = require("../controllers/reservas.controllers");
+const {
+  crearReserva,
+  eliminarReserva,
+} = require("../controllers/reservas.controllers");
 const router = express.Router();
 
-router.post("/", crearReserva);
+router.post("/:id", crearReserva);
+router.delete("/:id", eliminarReserva);
 
 module.exports = router;
