@@ -1,6 +1,24 @@
 const { validationResult } = require("express-validator");
 const CategoriasModel = require("../models/categoriasSchema");
 
+const ObtenerCategoriasHabilitadas = async (req, res) => {
+  try {
+    const categoria = await CategoriasModel.find({ deleted: false });
+
+    if (!categoria || categoria.length === 0) {
+      res.status(200).json({ msg: "No hay categorías habilitadas", categoria });
+    } else {
+      res
+        .status(200)
+        .json({ msg: "Categorias habilitados obtenidos", categoria });
+    }
+  } catch (error) {
+    res.status(500).json({
+      msg: "ERROR. No se pudieron obtener las categorias habilitados",
+      error,
+    });
+  }
+};
 const ConsultarCategorias = async (req, res) => {
   try {
     const categorias = await CategoriasModel.find();
@@ -86,6 +104,7 @@ const EliminarCatFisicamente = async (req, res) => {
 };
 
 module.exports = {
+  ObtenerCategoriasHabilitadas,
   ConsultarCategorias,
   CargarCategoria,
   ActualizarCategoria,

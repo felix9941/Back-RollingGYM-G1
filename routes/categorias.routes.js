@@ -1,5 +1,6 @@
 const express = require("express");
 const {
+  ObtenerCategoriasHabilitadas,
   ConsultarCategorias,
   CargarCategoria,
   ActualizarCategoria,
@@ -11,6 +12,7 @@ const { check } = require("express-validator");
 const multer = require("../middleware/multer");
 const router = express.Router();
 
+router.get("/categoriasHabilitadas", ObtenerCategoriasHabilitadas);
 router.get("/", ConsultarCategorias);
 router.post("/", CargarCategoria);
 router.put("/:id", ActualizarCategoria);
