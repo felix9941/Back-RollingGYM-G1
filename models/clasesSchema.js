@@ -14,7 +14,7 @@ const ClasesSchema = new Schema({
     minlength: [5, "El dia no puede tener menos de 5 caracteres"],
   },
   hora: {
-    type: Date,
+    type: String,
     required: true,
   },
   categoria: {
