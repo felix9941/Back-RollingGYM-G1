@@ -1,36 +1,20 @@
 const express = require("express");
+const {
+  ConsultarCategorias,
+  CargarCategoria,
+  ActualizarCategoria,
+  CambioEstadoCategoria,
+  EliminarCatFisicamente,
+} = require("../controllers/categorias.controllers");
 const auth = require("../middleware/auth");
 const { check } = require("express-validator");
-const {
-  crearClase,
-  eliminarClase,
-  consultarClases,
-  cambiarEstadoClase,
-  consultarClasesCategoria,
-  consultarClasesHabilitadas,
-} = require("../controllers/clases.controllers");
+const multer = require("../middleware/multer");
 const router = express.Router();
 
-router.delete("/:id", eliminarClase);
-router.post("/:id", cambiarEstadoClase);
-router.get("/habilitadas", consultarClasesHabilitadas);
-router.get("/:categoria", consultarClasesCategoria);
-router.get("/", consultarClases);
-router.post(
-  "/",
-  [
-    check("nombre", "Campo nombre vacio").notEmpty(),
-    check("dia", "Campo dia vacio").notEmpty(),
-    check("hora", "Campo hora vacio").notEmpty(),
-    check("categoria", "Campo categoria vacio").notEmpty(),
-    check("idProfesor", "Campo idProfesor vacio").notEmpty(),
-    check("cupo", "Campo cupo vacio").notEmpty(),
-    check("nombre", "El nombre debe tener entre 5 y 50 caracteres").isLength({
-      min: 5,
-      max: 50,
-    }),
-  ],
-  crearClase
-);
+router.get("/", ConsultarCategorias);
+router.post("/", CargarCategoria);
+router.put("/:id", ActualizarCategoria);
+router.put("/cambioEstadoProducto/:id", CambioEstadoCategoria);
+router.delete("/:id", EliminarCatFisicamente);
 
 module.exports = router;
