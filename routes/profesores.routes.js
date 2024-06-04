@@ -34,8 +34,8 @@ router.post(
       max: 50,
     }),
     check("email", "El email no es válido").isEmail(),
-    check("celular", "Campo celular vacío").notEmpty(),
-    check("celular", "El celular debe tener 10 caracteres").isLength({
+    check("telefono", "Campo telefono vacío").notEmpty(),
+    check("telefono", "El telefono debe tener 10 caracteres").isLength({
       min: 10,
       max: 10,
     }),
@@ -81,8 +81,8 @@ router.put(
       max: 70,
     }),
     check("email", "El email no es válido").isEmail(),
-    check("celular", "Campo celular vacío").notEmpty(),
-    check("celular", "El celular debe tener 10 caracteres").isLength({
+    check("telefono", "Campo telefono vacío").notEmpty(),
+    check("telefono", "El telefono debe tener 10 caracteres").isLength({
       min: 10,
       max: 10,
     }),
