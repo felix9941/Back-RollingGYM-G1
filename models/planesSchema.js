@@ -7,5 +7,10 @@ const PlanesSchema = new mongoose.Schema({
   deleted: { type: Boolean, default: false },
 });
 
+PlanesSchema.methods.toJSON = function () {
+  const { __v, ...plan } = this.toObject();
+  return plan;
+};
+
 const PlanesModel = mongoose.model("planes", PlanesSchema);
 module.exports = PlanesModel;
