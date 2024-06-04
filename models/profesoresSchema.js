@@ -39,7 +39,8 @@ const ProfesoresSchema = new Schema({
   foto: {
     type: String,
     required: true,
-    default: "uploads/default-profile.jpg",
+    default:
+      "https://res.cloudinary.com/dtnqgjjyk/image/upload/v1717465376/kpw6fimzrrmyk9mqrndu.jpg",
   },
 });
 
