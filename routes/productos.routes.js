@@ -3,8 +3,8 @@ const {
   ConsultarProductos,
   ActualizarProducto,
   CargarProducto,
-  EliminarProdLogicamente,
   EliminarProdFisicamente,
+  CambioEstadoProducto,
 } = require("../controllers/productos.controllers");
 const auth = require("../middleware/auth");
 const { check } = require("express-validator");
@@ -14,7 +14,7 @@ const router = express.Router();
 router.get("/", ConsultarProductos);
 router.post("/", CargarProducto);
 router.put("/:id", ActualizarProducto);
-router.put("/borradoLogico/:id", EliminarProdLogicamente);
+router.put("/cambioEstadoProducto/:id", CambioEstadoProducto);
 router.delete("/:id", EliminarProdFisicamente);
 
 module.exports = router;

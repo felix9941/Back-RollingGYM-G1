@@ -30,7 +30,11 @@ const ActualizarProducto = async (req, res) => {
       req.body,
       { new: true }
     );
-    console.log(productoActualizado);
+    if (!productoActualizado) {
+      return res
+        .status(404)
+        .json({ msg: "Producto no encontrado. No se puede actualizar" });
+    }
     res.status(200).json({ msg: "Producto actualizado", productoActualizado });
   } catch (error) {
     console.log(error);
@@ -38,23 +42,26 @@ const ActualizarProducto = async (req, res) => {
   }
 };
 
-const EliminarProdLogicamente = async (req, res) => {
+const CambioEstadoProducto = async (req, res) => {
   try {
-    const prodPorBorrarLogicamente = await UserModel.findById(req.params.id);
-
-    if (prodPorBorrarLogicamente.delete) {
-      return res
-        .status(400)
-        .json({ msg: "Producto ya fue eliminado logicamente" });
+    const producto = await ProductosModel.findById(req.params.id);
+    if (!producto) {
+      return res.status(404).json({ msg: "Producto no encontrado." });
     }
-    //Que busque en usuarios por id
-    prodPorBorrarLogicamente.deleted = true;
-    await prodPorBorrarLogicamente.save();
-    res.status(200).json({ msg: "Producto borrado logicamente" });
+
+    if (producto.deleted) {
+      producto.deleted = false;
+      await producto.save();
+      res.status(200).json({ msg: "El producto fue habilitado" });
+    } else {
+      producto.deleted = true;
+      await producto.save();
+      res.status(200).json({ msg: "El producto fue deshabilitado" });
+    }
   } catch (error) {
     res
       .status(500)
-      .json({ msg: "Error al eliminar producto ligicamente", error });
+      .json({ msg: "Error al cambiar el estado el producto", error });
   }
 };
 
@@ -80,6 +87,6 @@ module.exports = {
   ConsultarProductos,
   CargarProducto,
   ActualizarProducto,
-  EliminarProdLogicamente,
+  CambioEstadoProducto,
   EliminarProdFisicamente,
 };
