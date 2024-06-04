@@ -39,14 +39,14 @@ router.post(
       min: 10,
       max: 10,
     }),
-    check("contrasenia", "Campo contraseña vacío").notEmpty(),
+    check("contrasenia", "Campo contraseña vacio").notEmpty(),
     check(
       "contrasenia",
-      "La contraseña debe tener entre 8 y 30 caracteres"
-    ).isLength({ min: 8, max: 30 }),
+      "La contraseña debe tener entre 8 y 50 caracteres"
+    ).isLength({ min: 8, max: 50 }),
     check(
       "contrasenia",
-      "La contraseña debe contener números, símbolos, letras mayúsculas y minúsculas, y un mínimo de 8 caracteres"
+      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres"
     ).isStrongPassword({
       minLength: 8,
       maxLength: 100,

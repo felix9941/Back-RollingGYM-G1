@@ -29,7 +29,7 @@ const ProfesoresSchema = new Schema({
   contrasenia: {
     type: String,
     required: true,
-    maxlength: [30, "La contraseña no puede tener más de 30 caracteres"],
+    maxlength: [100, "La contraseña no puede tener más de 100 caracteres"],
     minlength: [8, "La contraseña no puede tener menos de 8 caracteres"],
   },
   deleted: {
