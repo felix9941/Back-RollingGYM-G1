@@ -13,8 +13,8 @@ const router = express.Router();
 
 router.delete("/:id", eliminarClase);
 router.post("/:id", cambiarEstadoClase);
-router.get("/:categoria", consultarClasesCategoria);
 router.get("/habilitadas", consultarClasesHabilitadas);
+router.get("/:categoria", consultarClasesCategoria);
 router.get("/", consultarClases);
 router.post(
   "/",
