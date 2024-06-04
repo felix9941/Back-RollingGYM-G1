@@ -3,6 +3,7 @@ require("../DB/config");
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const path = require("path");
 
 class Servidor {
   constructor() {
@@ -15,6 +16,10 @@ class Servidor {
     this.app.use(express.json());
     this.app.use(morgan("dev"));
     this.app.use(cors());
+    this.app.use(
+      "/uploads",
+      express.static(path.join(__dirname, "../uploads"))
+    );
   }
 
   routes() {

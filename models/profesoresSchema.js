@@ -39,6 +39,7 @@ const ProfesoresSchema = new Schema({
   foto: {
     type: String,
     required: true,
+    default: "uploads/default-profile.jpg",
   },
 });
 
