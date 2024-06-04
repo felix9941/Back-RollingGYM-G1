@@ -43,6 +43,19 @@ const consultarClases = async (req, res) => {
   }
 };
 
+const consultarUnaClase = async (req, res) => {
+  try {
+    const clase = await ClasesModel.findById(req.params);
+    if (!clase) {
+      return res.status(404).json({ message: "No se encontro la clase" });
+    }
+    res.status(200).json({ message: "Clase encontrada", clase });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al encontrar la clase", error });
+  }
+};
+
 const cambiarEstadoClase = async (req, res) => {
   try {
     const clase = await ClasesModel.findById(req.params.id);
@@ -108,4 +121,5 @@ module.exports = {
   crearClase,
   consultarClases,
   consultarClasesHabilitadas,
+  consultarUnaClase,
 };
