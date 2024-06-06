@@ -7,11 +7,15 @@ const {
   consultarClases,
   cambiarEstadoClase,
   consultarClasesCategoria,
+  consultarClasesHabilitadas,
+  consultarUnaClase,
 } = require("../controllers/clases.controllers");
 const router = express.Router();
 
+router.get("/unaClase/:id", consultarUnaClase);
 router.delete("/:id", eliminarClase);
 router.post("/:id", cambiarEstadoClase);
+router.get("/habilitadas", consultarClasesHabilitadas);
 router.get("/:categoria", consultarClasesCategoria);
 router.get("/", consultarClases);
 router.post(

@@ -14,9 +14,7 @@ const consultarProfesores = async (req, res) => {
     res.status(200).json({ message: "Profesores encontrados", profesores });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ message: "Error al consultar los profesores", error });
+    res.status(500).json({ message: "Error al consultar profesores", error });
   }
 };
 
@@ -65,7 +63,7 @@ const registroProfesor = async (req, res) => {
       await newProfesor.save();
       res
         .status(200)
-        .json({ message: "Profesor fue ccreado con éxito", newProfesor });
+        .json({ message: "Profesor fue creado con éxito", newProfesor });
     } else {
       res.status(500).json({ message: "Error nodemailer", error });
     }
@@ -150,10 +148,10 @@ const actualizarProfesor = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { nombre, apellido, email, celular, foto } = req.body;
+    const { nombre, apellido, email, telefono, foto } = req.body;
     const profesor = await ProfesoresModel.findByIdAndUpdate(
       req.params.id,
-      { nombre, apellido, email, celular, foto },
+      { nombre, apellido, email, telefono, foto },
       { new: true }
     );
     if (!profesor || profesor.deleted) {

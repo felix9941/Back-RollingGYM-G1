@@ -2,18 +2,18 @@ const express = require("express");
 const auth = require("../middleware/auth");
 const { check } = require("express-validator");
 const {
-  registroProfesor,
-  loginProfesor,
-  consultarProfesores,
-  consultarProfesoresHabilitados,
-  cambioEstadoProfesor,
-  actualizarProfesor,
-  eliminarProfesor,
-} = require("../controllers/profesores.controllers");
+  registroAdministrador,
+  loginAdministrador,
+  consultarAdministradores,
+  consultarAdministradoresHabilitados,
+  cambioEstadoAdministrador,
+  actualizarAdministrador,
+  eliminarAdministrador,
+} = require("../controllers/administradores.controllers");
 const router = express.Router();
 
-router.get("/habilitados", consultarProfesoresHabilitados);
-router.post("/login", loginProfesor);
+router.get("/habilitados", consultarAdministradoresHabilitados);
+router.post("/login", loginAdministrador);
 router.post(
   "/register",
   [
@@ -58,7 +58,7 @@ router.post(
       minSymbols: 1,
     }),
   ],
-  registroProfesor
+  registroAdministrador
 );
 router.put(
   "/:id",
@@ -88,10 +88,10 @@ router.put(
       max: 10,
     }),
   ],
-  actualizarProfesor
+  actualizarAdministrador
 );
-router.post("/:id", cambioEstadoProfesor);
-router.delete("/:id", eliminarProfesor);
-router.get("/", consultarProfesores);
+router.post("/:id", cambioEstadoAdministrador);
+router.delete("/:id", eliminarAdministrador);
+router.get("/", consultarAdministradores);
 
 module.exports = router;

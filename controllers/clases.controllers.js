@@ -43,6 +43,19 @@ const consultarClases = async (req, res) => {
   }
 };
 
+const consultarUnaClase = async (req, res) => {
+  try {
+    const clase = await ClasesModel.findById(req.params.id);
+    if (!clase) {
+      return res.status(404).json({ message: "No se encontro la clase" });
+    }
+    res.status(200).json({ message: "Clase encontrada", clase });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al encontrar la clase", error });
+  }
+};
+
 const cambiarEstadoClase = async (req, res) => {
   try {
     const clase = await ClasesModel.findById(req.params.id);
@@ -69,7 +82,28 @@ const cambiarEstadoClase = async (req, res) => {
 
 const consultarClasesCategoria = async (req, res) => {
   try {
-    const clases = await ClasesModel.find({ categoria: req.params.categoria });
+    const clases = await ClasesModel.find({
+      categoria: req.params.categoria,
+      deleted: false,
+    });
+    if (!clases) {
+      return res
+        .status(404)
+        .json({ message: "No se encontraron clases de esa categoria" });
+    }
+    res.status(200).json({
+      message: `Clases de ${req.params.categoria} encontradas`,
+      clases,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al encontrar las clases", error });
+  }
+};
+
+const consultarClasesHabilitadas = async (req, res) => {
+  try {
+    const clases = await ClasesModel.find({ deleted: false });
     if (!clases) {
       return res.status(404).json({ message: "No se encontraron clases" });
     }
@@ -86,4 +120,6 @@ module.exports = {
   cambiarEstadoClase,
   crearClase,
   consultarClases,
+  consultarClasesHabilitadas,
+  consultarUnaClase,
 };

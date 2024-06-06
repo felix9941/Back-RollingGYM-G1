@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const ProfesoresSchema = new Schema({
+const AdministradoresSchema = new Schema({
   nombre: {
     type: String,
     required: true,
@@ -36,17 +36,12 @@ const ProfesoresSchema = new Schema({
     type: Boolean,
     default: true,
   },
-  foto: {
-    type: String,
-    default:
-      "https://res.cloudinary.com/dtnqgjjyk/image/upload/v1717465376/kpw6fimzrrmyk9mqrndu.jpg",
-  },
 });
 
-ProfesoresSchema.methods.toJSON = function () {
-  const { __v, password, ...profesor } = this.toObject();
-  return profesor;
+administradoresSchema.methods.toJSON = function () {
+  const { __v, password, ...administrador } = this.toObject();
+  return administrador;
 };
 
-const ProfesoresModel = model("profesores", ProfesoresSchema);
-module.exports = ProfesoresModel;
+const AdministradoresModel = model("administradores", AdministradoresSchema);
+module.exports = AdministradoresModel;

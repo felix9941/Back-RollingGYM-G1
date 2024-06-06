@@ -27,6 +27,9 @@ class Servidor {
       "/api/administradores",
       require("../routes/administradores.routes")
     );
+    this.app.use("/api/planes", require("../routes/planes.routes"));
+    this.app.use("/api/categorias", require("../routes/categorias.routes"));
+    this.app.use("/api/productos", require("../routes/productos.routes"));
   }
 
   listen() {
