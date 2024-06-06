@@ -27,6 +27,14 @@ const ConsultarProductos = async (req, res) => {
 const CargarProducto = async (req, res) => {
   try {
     const nuevoProducto = new ProductosModel(req.body);
+    const results = await cloudinary.uploader.upload(req.file.path, {
+      transformation: [
+        { width: 1000, crop: "scale" },
+        { quality: "auto:best" },
+        { fetch_format: "auto" },
+      ],
+    });
+    nuevoProducto.foto = results.secure_url;
     await nuevoProducto.save();
     if (!nuevoProducto) {
       return res.json({ msg: "No se pudo cargar el producto" });
