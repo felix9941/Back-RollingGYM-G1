@@ -38,7 +38,7 @@ const AdministradoresSchema = new Schema({
   },
 });
 
-administradoresSchema.methods.toJSON = function () {
+AdministradoresSchema.methods.toJSON = function () {
   const { __v, password, ...administrador } = this.toObject();
   return administrador;
 };
