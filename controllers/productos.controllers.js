@@ -1,5 +1,5 @@
-const { validationResult } = require("express-validator");
 const ProductosModel = require("../models/productosSchema");
+const cloudinary = require("../middleware/cloudinary");
 
 const ObtenerProdHabilitados = async (req, res) => {
   try {
