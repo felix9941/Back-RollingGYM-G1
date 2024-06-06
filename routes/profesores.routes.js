@@ -12,6 +12,8 @@ const {
 } = require("../controllers/profesores.controllers");
 const router = express.Router();
 
+router.get("/habilitados", consultarProfesoresHabilitados);
+router.post("/login", loginProfesor);
 router.post(
   "/register",
   [
@@ -58,7 +60,6 @@ router.post(
   ],
   registroProfesor
 );
-
 router.put(
   "/:id",
   [
@@ -89,11 +90,8 @@ router.put(
   ],
   actualizarProfesor
 );
-
 router.post("/:id", cambioEstadoProfesor);
-router.post("/login", loginProfesor);
-router.get("/", consultarProfesores);
-router.get("/habilitados", consultarProfesoresHabilitados);
 router.delete("/:id", eliminarProfesor);
+router.get("/", consultarProfesores);
 
 module.exports = router;
