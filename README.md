@@ -2,7 +2,7 @@
 
 En el mundo del fitness, cada detalle cuenta. Nuestro proyecto de backend, construido con Express y Node.js, es el motor detrás de una experiencia de gimnasio sin igual. Desde la gestión de membresías hasta la reserva de clases y entrenamientos personalizados, nuestro sistema se asegura de que cada miembro se sumerja en una experiencia excepcional. Con una arquitectura robusta y eficiente, facilitamos la administración de recursos y la comunicación fluida entre el personal y los miembros. Bienvenido a un viaje donde el bienestar y la excelencia se unen, gracias a nuestra plataforma de backend que impulsa la energía detrás de cada entrenamiento inolvidable.
 
-# Características del proyecto ⚙️
+# Características del proyecto
 
 # Funcionalidades 🛠️
 
