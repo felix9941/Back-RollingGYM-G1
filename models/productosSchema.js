@@ -1,9 +1,17 @@
 const { Schema, model, Types } = require("mongoose");
 
 const ProductosSchema = new Schema({
-  nombre: { type: String, required: true },
-  foto: { type: String, required: true },
-  deleted: { type: Boolean, default: false },
+  nombre: {
+    type: String,
+    required: true,
+  },
+  foto: {
+    type: String,
+  },
+  deleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 ProductosSchema.methods.toJSON = function () {
@@ -11,5 +19,5 @@ ProductosSchema.methods.toJSON = function () {
   return producto;
 };
 
-const ProductsModel = model("productos", ProductosSchema);
-module.exports = ProductsModel;
+const ProductosModel = model("productos", ProductosSchema);
+module.exports = ProductosModel;
