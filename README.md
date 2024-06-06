@@ -54,9 +54,9 @@ Para la correcta ejecución del proyecto segui los siguientes pasos:
 4. Luego de esto, en la raiz del proyecto deberas crear un archivo para las variables de entorno, que se llamara ".env" y colocaras las siguientes variables:
 
    ```
-   PORT=4001
-   MONGODB_URI= tu cadena de conexion de la base de datos mongo
-   SECRET_JWT=Si$Ge$t10nH0t3l*
+   PORT=3002
+   MONGO_CONNECT = mongodb+srv://nachodm01:rGrVAJSCn2a4vM9q@cluster0.dtd92i2.mongodb.net/DataBaseGym
+   SECRET_KEY_JWT = practicabackend
    ```
 
 5. Ahora si, una vez instaladas las dependencias y creadas las variables de entorno, ya tienes el proyecto listo para ejecutarlo, para ello puedes ejecutar uno de los siguientes comando en la terminal abierta previamente:
