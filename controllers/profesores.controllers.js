@@ -1,4 +1,6 @@
+const ClientesModel = require("../models/clientesSchema");
 const ProfesoresModel = require("../models/profesoresSchema");
+const AdministradoresModel = require("../models/administradoresSchema");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
@@ -43,13 +45,17 @@ const registroProfesor = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const profesorExists = await ProfesoresModel.findOne({
+    const clienteExists = await ClientesModel.findOne({
       email: req.body.email,
     });
-    if (profesorExists) {
-      res
-        .status(409)
-        .json({ message: "El profesor ya se encuentra registrado" });
+    const adminExists = await AdministradoresModel.findOne({
+      email: req.body.email,
+    });
+    const profeExists = await ProfesoresModel.findOne({
+      email: req.body.email,
+    });
+    if (clienteExists || adminExists || profeExists) {
+      res.status(409).json({ message: "El email ya esta registrado" });
       return;
     }
     const newProfesor = new ProfesoresModel(req.body);
