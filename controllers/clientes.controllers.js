@@ -1,4 +1,6 @@
 const ClientesModel = require("../models/clientesSchema");
+const ProfesoresModel = require("../models/profesoresSchema");
+const AdministradoresModel = require("../models/administradoresSchema");
 const ReservasModel = require("../models/reservasSchema");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
@@ -46,8 +48,14 @@ const registroCliente = async (req, res) => {
     const clienteExists = await ClientesModel.findOne({
       email: req.body.email,
     });
-    if (clienteExists) {
-      res.status(409).json({ message: "El cliente ya existe" });
+    const adminExists = await AdministradoresModel.findOne({
+      email: req.body.email,
+    });
+    const profeExists = await ProfesoresModel.findOne({
+      email: req.body.email,
+    });
+    if (clienteExists || adminExists || profeExists) {
+      res.status(409).json({ message: "El email ya esta registrado" });
       return;
     }
     const newCliente = new ClientesModel(req.body);
