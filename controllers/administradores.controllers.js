@@ -1,3 +1,5 @@
+const ClientesModel = require("../models/clientesSchema");
+const ProfesoresModel = require("../models/profesoresSchema");
 const AdministradoresModel = require("../models/administradoresSchema");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
@@ -48,13 +50,17 @@ const registroAdministrador = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const administradorExists = await AdministradoresModel.findOne({
+    const clienteExists = await ClientesModel.findOne({
       email: req.body.email,
     });
-    if (administradorExists) {
-      res
-        .status(409)
-        .json({ message: "El administrador ya se encuentra registrado" });
+    const adminExists = await AdministradoresModel.findOne({
+      email: req.body.email,
+    });
+    const profeExists = await ProfesoresModel.findOne({
+      email: req.body.email,
+    });
+    if (clienteExists || adminExists || profeExists) {
+      res.status(409).json({ message: "El email ya esta registrado" });
       return;
     }
     const newAdministrador = new AdministradoresModel(req.body);
