@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const CategoriasModel = require("../models/categoriasSchema");
+const cloudinary = require("../middleware/cloudinary");
 
 const ObtenerCategoriasHabilitadas = async (req, res) => {
   try {
