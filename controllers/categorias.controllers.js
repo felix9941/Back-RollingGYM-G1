@@ -28,9 +28,49 @@ const ConsultarCategorias = async (req, res) => {
   }
 };
 
+const ObtenerCategoriasPorPlan = async (req, res) => {
+  try {
+    const categoriasHabilitadas = await CategoriasModel.find({
+      deleted: false,
+    });
+
+    if (!categoria || categoria.length === 0) {
+      res
+        .status(200)
+        .json({ msg: "No hay categorías habilitadas", categoriasHabilitadas });
+    }
+
+    idPlan = req.body.idPlan;
+    const categoria = categoriasHabilitadas.find({
+      idPlanes: { $in: [idPlan] },
+    });
+
+    if (!categoria || categoria.length === 0) {
+      res
+        .status(200)
+        .json({ msg: "No hay categorías para este plan", categoria });
+    } else {
+      res.status(200).json({ msg: "Categorias para este plan", categoria });
+    }
+  } catch (error) {
+    res.status(500).json({
+      msg: "ERROR. No se pudieron obtener las categorias para el plan especificado",
+      error,
+    });
+  }
+};
+
 const CargarCategoria = async (req, res) => {
   try {
     const nuevaCategoria = new CategoriasModel(req.body);
+    const results = await cloudinary.uploader.upload(req.file.path, {
+      transformation: [
+        { width: 1000, crop: "scale" },
+        { quality: "auto:best" },
+        { fetch_format: "auto" },
+      ],
+    });
+    nuevaCategoria.foto = results.secure_url;
     await nuevaCategoria.save();
     if (!nuevaCategoria) {
       return res.json({ msg: "No se pudo cargar la categoria" });
@@ -110,4 +150,5 @@ module.exports = {
   ActualizarCategoria,
   CambioEstadoCategoria,
   EliminarCatFisicamente,
+  ObtenerCategoriasPorPlan,
 };

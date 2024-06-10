@@ -9,7 +9,7 @@ const CategoriasSchema = new Schema({
     type: String,
     required: true,
   },
-  idPlanesAlQuePertenece: [
+  idPlanes: [
     {
       type: Types.ObjectId,
       required: true,
