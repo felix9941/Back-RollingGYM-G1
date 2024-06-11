@@ -31,20 +31,33 @@ const ConsultarCategorias = async (req, res) => {
 
 const ObtenerCategoriasPorPlan = async (req, res) => {
   try {
+    const plan = req.plan;
+
     const categoriasHabilitadas = await CategoriasModel.find({
       deleted: false,
     });
 
-    if (!categoria || categoria.length === 0) {
+    if (!categoriasHabilitadas || categoriasHabilitadas.length === 0) {
       res
         .status(200)
         .json({ msg: "No hay categorías habilitadas", categoriasHabilitadas });
     }
 
-    idPlan = req.body.idPlan;
-    const categoria = categoriasHabilitadas.find({
-      idPlanes: { $in: [idPlan] },
-    });
+    let categoria = ["hola"];
+
+    if (plan === "ninguno") {
+      categoria = [];
+    } else if (plan === "full") {
+      categoria = categoriasHabilitadas;
+    } else if (plan === "clases") {
+      categoria = categoriasHabilitadas.filter((cat) =>
+        cat.idPlanes.some((id) => id.toString() === "66677b6f5b741422f3a2fee0")
+      );
+    } else if (plan === "aparatos") {
+      categoria = categoriasHabilitadas.filter((cat) =>
+        cat.idPlanes.some((id) => id.toString() === "66677b045b741422f3a2fede")
+      );
+    }
 
     if (!categoria || categoria.length === 0) {
       res
