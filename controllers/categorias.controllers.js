@@ -76,15 +76,23 @@ const ObtenerCategoriasPorPlan = async (req, res) => {
 
 const CargarCategoria = async (req, res) => {
   try {
-    const nuevaCategoria = new CategoriasModel(req.body);
-    const results = await cloudinary.uploader.upload(req.file.path, {
+    const { nombre, idPlanes } = req.body;
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ msg: "No se ha proporcionado una imagen" });
+    }
+    const results = await cloudinary.uploader.upload(file.path, {
       transformation: [
         { width: 1000, crop: "scale" },
         { quality: "auto:best" },
         { fetch_format: "auto" },
       ],
     });
-    nuevaCategoria.foto = results.secure_url;
+    const nuevaCategoria = new CategoriasModel({
+      nombre,
+      idPlanes,
+      foto: results.secure_url,
+    });
     await nuevaCategoria.save();
     if (!nuevaCategoria) {
       return res.json({ msg: "No se pudo cargar la categoria" });
