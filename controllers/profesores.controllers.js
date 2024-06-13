@@ -168,27 +168,46 @@ const cambioEstadoProfesor = async (req, res) => {
   }
 };
 
+// const actualizarProfesor = async (req, res) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     return res.status(400).json({ errors: errors.array() });
+//   }
+//   try {
+//     const { nombre, apellido, email, telefono, foto } = req.body;
+//     const profesor = await ProfesoresModel.findByIdAndUpdate(
+//       req.params.id,
+//       { nombre, apellido, email, telefono, foto },
+//       { new: true }
+//     );
+//     if (!profesor || profesor.deleted) {
+//       return res.status(404).json({ message: "Profesor no encontrado" });
+//     }
+//     res
+//       .status(200)
+//       .json({ message: "Profesor actualizado con éxito", profesor });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(400).json({ message: "Error al actualizar el profesor", error });
+//   }
+// };
 const actualizarProfesor = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { nombre, apellido, email, telefono, foto } = req.body;
-    const profesor = await ProfesoresModel.findByIdAndUpdate(
-      req.params.id,
-      { nombre, apellido, email, telefono, foto },
-      { new: true }
-    );
-    if (!profesor || profesor.deleted) {
+    const { id } = req.params;
+    const profesor = await ProfesoresModel.findById(id);
+    if (!profesor) {
       return res.status(404).json({ message: "Profesor no encontrado" });
     }
-    res
-      .status(200)
-      .json({ message: "Profesor actualizado con éxito", profesor });
+    Object.assign(profesor, req.body);
+    await profesor.save();
+    res.status(200).json({ message: "Profesor actualizado", profesor });
   } catch (error) {
     console.log(error);
-    res.status(400).json({ message: "Error al actualizar el profesor", error });
+    res.status(500).json({ message: "Error al actualizar profesor", error });
   }
 };
 
