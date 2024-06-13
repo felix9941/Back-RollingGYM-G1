@@ -120,31 +120,51 @@ const loginProfesor = async (req, res) => {
   }
 };
 
+// const cambioEstadoProfesor = async (req, res) => {
+//   try {
+//     const profesor = await ProfesoresModel.findById(req.params.id);
+//     if (!profesor) {
+//       res.status(404).json({ message: "El profesor no existe" });
+//       return;
+//     }
+//     if (profesor.deleted === true) {
+//       profesor.deleted = false;
+//       await profesor.save();
+//       res
+//         .status(400)
+//         .json({ message: "Profesor habilitado con éxito", profesor });
+//       return;
+//     }
+//     profesor.deleted = true;
+//     await profesor.save();
+//     res
+//       .status(200)
+//       .json({ message: "Profesor deshabilitado con éxito", profesor });
+//   } catch (error) {
+//     console.log(error);
+//     res
+//       .status(500)
+//       .json({ message: "Error al cambiar el estado del profesor", error });
+//   }
+// };
 const cambioEstadoProfesor = async (req, res) => {
   try {
-    const profesor = await ProfesoresModel.findById(req.params.id);
+    const { id } = req.params;
+    const profesor = await ProfesoresModel.findById(id);
     if (!profesor) {
-      res.status(404).json({ message: "El profesor no existe" });
-      return;
+      return res.status(404).json({ message: "Profesor no encontrado" });
     }
-    if (profesor.deleted === true) {
-      profesor.deleted = false;
-      await profesor.save();
-      res
-        .status(400)
-        .json({ message: "Profesor habilitado con éxito", profesor });
-      return;
-    }
-    profesor.deleted = true;
+    profesor.deleted = !profesor.deleted;
     await profesor.save();
-    res
-      .status(200)
-      .json({ message: "Profesor deshabilitado con éxito", profesor });
+    res.status(200).json({
+      message: "Estado del profesor actualizado",
+      deleted: profesor.deleted,
+    });
   } catch (error) {
     console.log(error);
     res
       .status(500)
-      .json({ message: "Error al cambiar el estado del profesor", error });
+      .json({ message: "Error al cambiar estado del profesor", error });
   }
 };
 
