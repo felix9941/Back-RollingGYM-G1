@@ -1,6 +1,8 @@
+const ClientesModel = require("../models/clientesSchema");
 const ProfesoresModel = require("../models/profesoresSchema");
-const { validationResult } = require("express-validator");
+const AdministradoresModel = require("../models/administradoresSchema");
 const bcrypt = require("bcrypt");
+const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const { welcomeMessage } = require("../middleware/messages");
 
@@ -59,39 +61,59 @@ const registroProfesor = async (req, res) => {
     const newProfesor = new ProfesoresModel(req.body);
     const salt = bcrypt.genSaltSync(10);
     newProfesor.contrasenia = bcrypt.hashSync(req.body.contrasenia, salt);
-    const messageResponse = welcomeMessage(
-      req.body.nombre,
-      req.body.apellido,
-      req.body.email
+    const messageResponse = await welcomeMessage(
+      newProfesor.email,
+      newProfesor.nombre
     );
-    const savedProfesor = await newProfesor.save();
-    res.status(201).json({
-      message: "Profesor registrado con exito",
-      savedProfesor,
-      messageResponse,
-    });
+    if (messageResponse === 200) {
+      await newProfesor.save();
+      res
+        .status(200)
+        .json({ message: "Profesor fue creado con éxito", newProfesor });
+    } else {
+      res.status(500).json({ message: "Error nodemailer", error });
+    }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error al registrar profesor", error });
+    res.status(500).json({ message: "Error, No se puede crear el profesor" });
   }
 };
 
 const loginProfesor = async (req, res) => {
   try {
-    const { email, contrasenia } = req.body;
-    const profesor = await ProfesoresModel.findOne({ email });
-    if (!profesor) {
-      return res.status(404).json({ message: "Profesor no encontrado" });
-    }
-    const isMatch = await bcrypt.compare(contrasenia, profesor.contrasenia);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Credenciales incorrectas" });
-    }
-    const payload = { id: profesor._id, email: profesor.email };
-    const token = jwt.sign(payload, process.env.SECRET_KEY, {
-      expiresIn: "1h",
+    const profesorExist = await ProfesoresModel.findOne({
+      email: req.body.email,
     });
-    res.status(200).json({ message: "Login exitoso", token });
+
+    if (!profesorExist) {
+      res.status(404).json({ message: "Profesor no encontrado" });
+      return;
+    }
+
+    const validContrasenia = await bcrypt.compare(
+      req.body.contrasenia,
+      profesorExist.contrasenia
+    );
+
+    if (!validContrasenia) {
+      res.status(401).json({ message: "Contraseña incorrecta" });
+      return;
+    }
+
+    const payload = {
+      profesor: {
+        id: profesorExist._id,
+        email: profesorExist.email,
+      },
+    };
+
+    const token = jwt.sign(payload, process.env.SECRET_KEY_JWT);
+
+    res.status(200).json({
+      message: "Inicio de sesión exitoso",
+      token,
+      role: "profesor",
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error al iniciar sesión", error });
@@ -100,22 +122,29 @@ const loginProfesor = async (req, res) => {
 
 const cambioEstadoProfesor = async (req, res) => {
   try {
-    const { id } = req.params;
-    const profesor = await ProfesoresModel.findById(id);
+    const profesor = await ProfesoresModel.findById(req.params.id);
     if (!profesor) {
-      return res.status(404).json({ message: "Profesor no encontrado" });
+      res.status(404).json({ message: "El profesor no existe" });
+      return;
     }
-    profesor.deleted = !profesor.deleted;
+    if (profesor.deleted === true) {
+      profesor.deleted = false;
+      await profesor.save();
+      res
+        .status(400)
+        .json({ message: "Profesor habilitado con éxito", profesor });
+      return;
+    }
+    profesor.deleted = true;
     await profesor.save();
-    res.status(200).json({
-      message: "Estado del profesor actualizado",
-      deleted: profesor.deleted,
-    });
+    res
+      .status(200)
+      .json({ message: "Profesor deshabilitado con éxito", profesor });
   } catch (error) {
     console.log(error);
     res
       .status(500)
-      .json({ message: "Error al cambiar estado del profesor", error });
+      .json({ message: "Error al cambiar el estado del profesor", error });
   }
 };
 
@@ -125,32 +154,38 @@ const actualizarProfesor = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { id } = req.params;
-    const profesor = await ProfesoresModel.findById(id);
-    if (!profesor) {
+    const { nombre, apellido, email, telefono, foto } = req.body;
+    const profesor = await ProfesoresModel.findByIdAndUpdate(
+      req.params.id,
+      { nombre, apellido, email, telefono, foto },
+      { new: true }
+    );
+    if (!profesor || profesor.deleted) {
       return res.status(404).json({ message: "Profesor no encontrado" });
     }
-    Object.assign(profesor, req.body);
-    await profesor.save();
-    res.status(200).json({ message: "Profesor actualizado", profesor });
+    res
+      .status(200)
+      .json({ message: "Profesor actualizado con éxito", profesor });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error al actualizar profesor", error });
+    res.status(400).json({ message: "Error al actualizar el profesor", error });
   }
 };
 
 const eliminarProfesor = async (req, res) => {
   try {
-    const { id } = req.params;
-    const profesor = await ProfesoresModel.findById(id);
+    const profesor = await ProfesoresModel.findByIdAndUpdate(
+      req.params.id,
+      { deleted: true },
+      { new: true }
+    );
     if (!profesor) {
       return res.status(404).json({ message: "Profesor no encontrado" });
     }
-    await profesor.remove();
-    res.status(200).json({ message: "Profesor eliminado" });
+    res.status(200).json({ message: "Profesor eliminado con éxito" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error al eliminar profesor", error });
+    res.status(500).json({ message: "Error al eliminar el profesor", error });
   }
 };
 
