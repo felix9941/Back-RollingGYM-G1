@@ -1,5 +1,4 @@
 const express = require("express");
-const auth = require("../middleware/auth");
 const { check } = require("express-validator");
 const {
   registroProfesor,
@@ -60,6 +59,7 @@ router.post(
   ],
   registroProfesor
 );
+router.put("/estadoProfesor/:id", cambioEstadoProfesor);
 router.put(
   "/:id",
   [
@@ -90,7 +90,6 @@ router.put(
   ],
   actualizarProfesor
 );
-router.post("/:id", cambioEstadoProfesor);
 router.delete("/:id", eliminarProfesor);
 router.get("/", consultarProfesores);
 
