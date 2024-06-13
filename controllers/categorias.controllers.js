@@ -105,9 +105,22 @@ const CargarCategoria = async (req, res) => {
 
 const ActualizarCategoria = async (req, res) => {
   try {
+    const { nombre, idPlanes } = req.body;
+    let updateData = { nombre, idPlanes };
+    if (req.file) {
+      const file = req.file;
+      const results = await cloudinary.uploader.upload(file.path, {
+        transformation: [
+          { width: 1000, crop: "scale" },
+          { quality: "auto:best" },
+          { fetch_format: "auto" },
+        ],
+      });
+      updateData = { ...updateData, foto: results.secure_url };
+    }
     const categoriaActualizada = await CategoriasModel.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true }
     );
     if (!categoriaActualizada) {

@@ -17,7 +17,7 @@ const obtenerPlan = require("../middleware/obtenerPlan");
 router.put("/cambioEstadoCategoria/:id", CambioEstadoCategoria);
 router.get("/categoriasHabilitadas", ObtenerCategoriasHabilitadas);
 router.get("/categoriasPlan", obtenerPlan(), ObtenerCategoriasPorPlan);
-router.put("/:id", ActualizarCategoria);
+router.put("/:id", multer.single("foto"), ActualizarCategoria);
 router.delete("/:id", EliminarCatFisicamente);
 router.get("/", ConsultarCategorias);
 router.post("/", multer.single("foto"), CargarCategoria);
