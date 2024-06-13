@@ -211,20 +211,39 @@ const actualizarProfesor = async (req, res) => {
   }
 };
 
+// const eliminarProfesor = async (req, res) => {
+//   try {
+//     const profesor = await ProfesoresModel.findByIdAndUpdate(
+//       req.params.id,
+//       { deleted: true },
+//       { new: true }
+//     );
+//     if (!profesor) {
+//       return res.status(404).json({ message: "Profesor no encontrado" });
+//     }
+//     res.status(200).json({ message: "Profesor eliminado con éxito" });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ message: "Error al eliminar el profesor", error });
+//   }
+// };
+
+// Permite la eliminacion fisica del profesor
 const eliminarProfesor = async (req, res) => {
   try {
-    const profesor = await ProfesoresModel.findByIdAndUpdate(
-      req.params.id,
-      { deleted: true },
-      { new: true }
-    );
+    const profesor = await ProfesoresModel.findOne({
+      _id: req.params.id,
+    });
     if (!profesor) {
-      return res.status(404).json({ message: "Profesor no encontrado" });
+      return res
+        .status(400)
+        .json({ msg: "No se encuentra el profesor - ID incorrecto" });
     }
-    res.status(200).json({ message: "Profesor eliminado con éxito" });
+    await ProfesoresModel.findByIdAndDelete({ _id: req.params.id });
+    res.status(200).json({ msg: "Profesor borrado con exito" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error al eliminar el profesor", error });
+    res.status(500).json({ msg: "ERROR: El profesor no fue borrado" });
   }
 };
 
