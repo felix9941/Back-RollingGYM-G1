@@ -1,6 +1,7 @@
 const ClientesModel = require("../models/clientesSchema");
 const ProfesoresModel = require("../models/profesoresSchema");
 const AdministradoresModel = require("../models/administradoresSchema");
+const cloudinary = require("../middleware/cloudinary");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
@@ -41,10 +42,36 @@ const consultarProfesoresHabilitados = async (req, res) => {
 
 const registroProfesor = async (req, res) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) {
+  if (errors.isEmpty()) {
+    console.log("Es la imagen");
     return res.status(400).json({ errors: errors.array() });
   }
   try {
+    const { nombre, apellido, email, telefono, contrasenia } = req.body;
+    const file = req.file;
+    console.log("rea.body", req.body);
+
+    console.log(
+      "Datos cargados: ",
+      nombre,
+      apellido,
+      email,
+      telefono,
+      contrasenia
+    );
+
+    if (!file) {
+      return res.status(400).json({ msg: "No se ha proporcionado una imagen" });
+    }
+
+    const results = await cloudinary.uploader.upload(file.path, {
+      transformation: [
+        { width: 1000, crop: "scale" },
+        { quality: "auto:best" },
+        { fetch_format: "auto" },
+      ],
+    });
+
     const clienteExists = await ClientesModel.findOne({
       email: req.body.email,
     });
@@ -58,7 +85,15 @@ const registroProfesor = async (req, res) => {
       res.status(409).json({ message: "El email ya esta registrado" });
       return;
     }
-    const newProfesor = new ProfesoresModel(req.body);
+
+    const newProfesor = new ProfesoresModel({
+      nombre,
+      apellido,
+      email,
+      telefono,
+      contrasenia,
+      foto: results.secure_url,
+    });
     const salt = bcrypt.genSaltSync(10);
     newProfesor.contrasenia = bcrypt.hashSync(req.body.contrasenia, salt);
     const messageResponse = await welcomeMessage(
@@ -71,11 +106,13 @@ const registroProfesor = async (req, res) => {
         .status(200)
         .json({ message: "Profesor fue creado con éxito", newProfesor });
     } else {
-      res.status(500).json({ message: "Error nodemailer", error });
+      res.status(500).json({ message: "Error nodemailer" });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error, No se puede crear el profesor" });
+    res
+      .status(500)
+      .json({ message: "Error, No se puede crear el profesor", error });
   }
 };
 
