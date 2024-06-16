@@ -1,5 +1,6 @@
 const express = require("express");
 const { check } = require("express-validator");
+const multer = require("../middleware/multer");
 const {
   registroProfesor,
   loginProfesor,
@@ -57,6 +58,7 @@ router.post(
       minSymbols: 1,
     }),
   ],
+  multer.single("foto"),
   registroProfesor
 );
 router.put("/estadoProfesor/:id", cambioEstadoProfesor);
