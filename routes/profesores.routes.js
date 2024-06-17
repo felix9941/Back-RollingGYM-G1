@@ -90,6 +90,7 @@ router.put(
       max: 10,
     }),
   ],
+  multer.single("foto"),
   actualizarProfesor
 );
 router.delete("/:id", eliminarProfesor);
