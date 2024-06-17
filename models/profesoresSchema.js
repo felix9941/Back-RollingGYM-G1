@@ -34,12 +34,13 @@ const ProfesoresSchema = new Schema({
   },
   deleted: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   foto: {
     type: String,
     default:
       "https://res.cloudinary.com/dtnqgjjyk/image/upload/v1717465376/kpw6fimzrrmyk9mqrndu.jpg",
+    required: false,
   },
 });
 

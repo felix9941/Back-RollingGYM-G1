@@ -41,61 +41,46 @@ const consultarProfesoresHabilitados = async (req, res) => {
 };
 
 const registroProfesor = async (req, res) => {
-  const errors = validationResult(req);
-  if (errors.isEmpty()) {
-    console.log("Es la imagen");
-    return res.status(400).json({ errors: errors.array() });
-  }
   try {
     const { nombre, apellido, email, telefono, contrasenia } = req.body;
     const file = req.file;
-    console.log("rea.body", req.body);
+    let results;
 
-    console.log(
-      "Datos cargados: ",
-      nombre,
-      apellido,
-      email,
-      telefono,
-      contrasenia
-    );
-
-    if (!file) {
-      return res.status(400).json({ msg: "No se ha proporcionado una imagen" });
+    if (file) {
+      results = await cloudinary.uploader.upload(file.path, {
+        transformation: [
+          { width: 1000, crop: "scale" },
+          { quality: "auto:best" },
+          { fetch_format: "auto" },
+        ],
+      });
     }
 
-    const results = await cloudinary.uploader.upload(file.path, {
-      transformation: [
-        { width: 1000, crop: "scale" },
-        { quality: "auto:best" },
-        { fetch_format: "auto" },
-      ],
-    });
+    const clienteExists = await ClientesModel.findOne({ email });
+    const adminExists = await AdministradoresModel.findOne({ email });
+    const profeExists = await ProfesoresModel.findOne({ email });
 
-    const clienteExists = await ClientesModel.findOne({
-      email: req.body.email,
-    });
-    const adminExists = await AdministradoresModel.findOne({
-      email: req.body.email,
-    });
-    const profeExists = await ProfesoresModel.findOne({
-      email: req.body.email,
-    });
     if (clienteExists || adminExists || profeExists) {
-      res.status(409).json({ message: "El email ya esta registrado" });
-      return;
+      return res.status(409).json({ message: "El email ya está registrado" });
     }
 
-    const newProfesor = new ProfesoresModel({
+    const newProfesorData = {
       nombre,
       apellido,
       email,
       telefono,
       contrasenia,
-      foto: results.secure_url,
-    });
+    };
+
+    if (file && results) {
+      newProfesorData.foto = results.secure_url;
+    }
+
+    const newProfesor = new ProfesoresModel(newProfesorData);
+
     const salt = bcrypt.genSaltSync(10);
-    newProfesor.contrasenia = bcrypt.hashSync(req.body.contrasenia, salt);
+    newProfesor.contrasenia = bcrypt.hashSync(contrasenia, salt);
+
     const messageResponse = await welcomeMessage(
       newProfesor.email,
       newProfesor.nombre
@@ -104,15 +89,15 @@ const registroProfesor = async (req, res) => {
       await newProfesor.save();
       res
         .status(200)
-        .json({ message: "Profesor fue creado con éxito", newProfesor });
+        .json({ message: "El profesor fue creado con éxito", newProfesor });
     } else {
-      res.status(500).json({ message: "Error nodemailer" });
+      res.status(500).json({ message: "Error con nodemailer" });
     }
   } catch (error) {
     console.log(error);
     res
       .status(500)
-      .json({ message: "Error, No se puede crear el profesor", error });
+      .json({ message: "Error, no se puede crear el profesor", error });
   }
 };
 
@@ -157,33 +142,6 @@ const loginProfesor = async (req, res) => {
   }
 };
 
-// const cambioEstadoProfesor = async (req, res) => {
-//   try {
-//     const profesor = await ProfesoresModel.findById(req.params.id);
-//     if (!profesor) {
-//       res.status(404).json({ message: "El profesor no existe" });
-//       return;
-//     }
-//     if (profesor.deleted === true) {
-//       profesor.deleted = false;
-//       await profesor.save();
-//       res
-//         .status(400)
-//         .json({ message: "Profesor habilitado con éxito", profesor });
-//       return;
-//     }
-//     profesor.deleted = true;
-//     await profesor.save();
-//     res
-//       .status(200)
-//       .json({ message: "Profesor deshabilitado con éxito", profesor });
-//   } catch (error) {
-//     console.log(error);
-//     res
-//       .status(500)
-//       .json({ message: "Error al cambiar el estado del profesor", error });
-//   }
-// };
 const cambioEstadoProfesor = async (req, res) => {
   try {
     const { id } = req.params;
@@ -206,108 +164,54 @@ const cambioEstadoProfesor = async (req, res) => {
 };
 
 const actualizarProfesor = async (req, res) => {
-  // const errors = validationResult(req);
-  // if (errors.isEmpty()) {
-  //   return res.status(400).json({ errors: errors.array() });
-  // }
   try {
-    // const { nombre, apellido, email, telefono, foto } = req.body;
+    const { id } = req.params;
     const { nombre, apellido, email, telefono, contrasenia } = req.body;
-    console.log(nombre, apellido, email, telefono, contrasenia);
-    let updateData = { nombre, apellido, email, telefono, contrasenia };
-    if (req.file) {
-      const file = req.file;
-      const results = await cloudinary.uploader.upload(file.path, {
+    const file = req.file;
+    let results;
+
+    const profesor = await ProfesoresModel.findById(id);
+    if (!profesor) {
+      return res.status(404).json({ message: "Profesor no encontrado" });
+    }
+
+    if (file) {
+      results = await cloudinary.uploader.upload(file.path, {
         transformation: [
           { width: 1000, crop: "scale" },
           { quality: "auto:best" },
           { fetch_format: "auto" },
         ],
       });
-      updateData = { ...updateData, foto: results.secure_url };
     }
 
-    const profesorActualizado = await ProfesoresModel.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true }
-    );
+    profesor.nombre = nombre || profesor.nombre;
+    profesor.apellido = apellido || profesor.apellido;
+    profesor.email = email || profesor.email;
+    profesor.telefono = telefono || profesor.telefono;
 
-    if (!profesorActualizado) {
-      return res
-        .status(404)
-        .json({ msg: "Profesor no encontrado. No se puede actualizar" });
+    if (contrasenia) {
+      const salt = bcrypt.genSaltSync(10);
+      profesor.contrasenia = bcrypt.hashSync(contrasenia, salt);
     }
 
-    res.status(200).json({ msg: "profesor Actualizado", profesorActualizado });
-    // const clienteExists = await ClientesModel.findOne({
-    //   email: req.body.email,
-    // });
-    // const adminExists = await AdministradoresModel.findOne({
-    //   email: req.body.email,
-    // });
-    // const profeExists = await ProfesoresModel.findOne({
-    //   email: req.body.email,
-    // });
-    // if (clienteExists || adminExists || profeExists) {
-    //   res.status(409).json({ message: "El email ya esta registrado" });
-    //   return;
-    // }
+    if (file && results) {
+      profesor.foto = results.secure_url;
+    }
 
-    //   const newProfesor = new ProfesoresModel({
-    //     nombre,
-    //     apellido,
-    //     email,
-    //     telefono,
-    //     contrasenia,
-    //     foto: results.secure_url,
-    //   });
-    //   const salt = bcrypt.genSaltSync(10);
-    //   newProfesor.contrasenia = bcrypt.hashSync(req.body.contrasenia, salt);
-    //   const messageResponse = await welcomeMessage(
-    //     newProfesor.email,
-    //     newProfesor.nombre
-    //   );
-    //   if (messageResponse === 200) {
-    //     const profesor = await ProfesoresModel.findByIdAndUpdate(
-    //       req.params.id,
-    //       { nombre, apellido, email, telefono, contrasenia, foto },
-    //       { new: true }
-    //     );
-    //   } else {
-    //     res.status(500).json({ message: "Error nodemailer" });
-    //   }
+    await profesor.save();
 
-    //   if (!profesor) {
-    //     return res.status(404).json({ message: "Profesor no encontrado" });
-    //   }
-    //   res
-    //     .status(200)
-    //     .json({ message: "Profesor actualizado con éxito", profesor });
+    return res
+      .status(200)
+      .json({ message: "Profesor actualizado con éxito", profesor });
   } catch (error) {
     console.log(error);
-    res.status(400).json({ message: "Error al actualizar el profesor", error });
+    return res
+      .status(500)
+      .json({ message: "Error al actualizar el profesor", error });
   }
 };
 
-// const eliminarProfesor = async (req, res) => {
-//   try {
-//     const profesor = await ProfesoresModel.findByIdAndUpdate(
-//       req.params.id,
-//       { deleted: true },
-//       { new: true }
-//     );
-//     if (!profesor) {
-//       return res.status(404).json({ message: "Profesor no encontrado" });
-//     }
-//     res.status(200).json({ message: "Profesor eliminado con éxito" });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "Error al eliminar el profesor", error });
-//   }
-// };
-
-// Permite la eliminacion fisica del profesor
 const eliminarProfesor = async (req, res) => {
   try {
     const profesor = await ProfesoresModel.findOne({
