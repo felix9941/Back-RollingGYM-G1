@@ -205,46 +205,88 @@ const cambioEstadoProfesor = async (req, res) => {
   }
 };
 
-// const actualizarProfesor = async (req, res) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return res.status(400).json({ errors: errors.array() });
-//   }
-//   try {
-//     const { nombre, apellido, email, telefono, foto } = req.body;
-//     const profesor = await ProfesoresModel.findByIdAndUpdate(
-//       req.params.id,
-//       { nombre, apellido, email, telefono, foto },
-//       { new: true }
-//     );
-//     if (!profesor || profesor.deleted) {
-//       return res.status(404).json({ message: "Profesor no encontrado" });
-//     }
-//     res
-//       .status(200)
-//       .json({ message: "Profesor actualizado con éxito", profesor });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(400).json({ message: "Error al actualizar el profesor", error });
-//   }
-// };
 const actualizarProfesor = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+  // const errors = validationResult(req);
+  // if (errors.isEmpty()) {
+  //   return res.status(400).json({ errors: errors.array() });
+  // }
   try {
-    const { id } = req.params;
-    const profesor = await ProfesoresModel.findById(id);
-    if (!profesor) {
-      return res.status(404).json({ message: "Profesor no encontrado" });
+    // const { nombre, apellido, email, telefono, foto } = req.body;
+    const { nombre, apellido, email, telefono, contrasenia } = req.body;
+    console.log(nombre, apellido, email, telefono, contrasenia);
+    let updateData = { nombre, apellido, email, telefono, contrasenia };
+    if (req.file) {
+      const file = req.file;
+      const results = await cloudinary.uploader.upload(file.path, {
+        transformation: [
+          { width: 1000, crop: "scale" },
+          { quality: "auto:best" },
+          { fetch_format: "auto" },
+        ],
+      });
+      updateData = { ...updateData, foto: results.secure_url };
     }
-    Object.assign(profesor, req.body);
-    await profesor.save();
-    res.status(200).json({ message: "Profesor actualizado", profesor });
+
+    const profesorActualizado = await ProfesoresModel.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    if (!profesorActualizado) {
+      return res
+        .status(404)
+        .json({ msg: "Profesor no encontrado. No se puede actualizar" });
+    }
+
+    res.status(200).json({ msg: "profesor Actualizado", profesorActualizado });
+    // const clienteExists = await ClientesModel.findOne({
+    //   email: req.body.email,
+    // });
+    // const adminExists = await AdministradoresModel.findOne({
+    //   email: req.body.email,
+    // });
+    // const profeExists = await ProfesoresModel.findOne({
+    //   email: req.body.email,
+    // });
+    // if (clienteExists || adminExists || profeExists) {
+    //   res.status(409).json({ message: "El email ya esta registrado" });
+    //   return;
+    // }
+
+    //   const newProfesor = new ProfesoresModel({
+    //     nombre,
+    //     apellido,
+    //     email,
+    //     telefono,
+    //     contrasenia,
+    //     foto: results.secure_url,
+    //   });
+    //   const salt = bcrypt.genSaltSync(10);
+    //   newProfesor.contrasenia = bcrypt.hashSync(req.body.contrasenia, salt);
+    //   const messageResponse = await welcomeMessage(
+    //     newProfesor.email,
+    //     newProfesor.nombre
+    //   );
+    //   if (messageResponse === 200) {
+    //     const profesor = await ProfesoresModel.findByIdAndUpdate(
+    //       req.params.id,
+    //       { nombre, apellido, email, telefono, contrasenia, foto },
+    //       { new: true }
+    //     );
+    //   } else {
+    //     res.status(500).json({ message: "Error nodemailer" });
+    //   }
+
+    //   if (!profesor) {
+    //     return res.status(404).json({ message: "Profesor no encontrado" });
+    //   }
+    //   res
+    //     .status(200)
+    //     .json({ message: "Profesor actualizado con éxito", profesor });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Error al actualizar profesor", error });
+    res.status(400).json({ message: "Error al actualizar el profesor", error });
   }
 };
 
