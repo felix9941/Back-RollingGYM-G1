@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const auth = require("../middleware/auth");
 const { check } = require("express-validator");
 const {

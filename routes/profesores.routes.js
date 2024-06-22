@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const { check } = require("express-validator");
 const multer = require("../middleware/multer");
 const {
