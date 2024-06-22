@@ -93,6 +93,7 @@ router.post(
   ],
   registroCliente
 );
+router.options("/login", cors());
 router.post("/login", loginCliente);
 router.get("/habilitados", consultarClientesHabilitados);
 router.get("/", consultarClientes);
