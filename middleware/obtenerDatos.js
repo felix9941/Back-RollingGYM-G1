@@ -7,7 +7,7 @@ module.exports = () => async (req, res, next) => {
       return res.status(400).json({ message: "Error al encontrar el token" });
     }
     const verifyToken = jwt.verify(token, process.env.SECRET_KEY_JWT);
-    req.id = await verifyToken.cliente.id;
+    req.id = await verifyToken.administrador.id;
     next();
   } catch (error) {
     console.log(error);
