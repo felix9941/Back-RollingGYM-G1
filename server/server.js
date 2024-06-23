@@ -12,16 +12,9 @@ class Servidor {
   }
 
   middleware() {
-    const corsOptions = {
-      origin: "https://front-rolling-gym-g1.vercel.app", // Dominio del frontend
-      methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
-      allowedHeaders: ["Content-Type", "Authorization"], // Headers permitidos
-      credentials: true, // Permitir envío de cookies y cabeceras de autorización
-    };
-
     this.app.use(express.json());
     this.app.use(morgan("dev"));
-    this.app.use(cors(corsOptions));
+    this.app.use(cors());
   }
 
   routes() {
