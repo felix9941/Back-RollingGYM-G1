@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const auth = require("../middleware/auth");
 const { check } = require("express-validator");
 const {
@@ -14,7 +13,6 @@ const {
 const router = express.Router();
 
 router.get("/habilitados", consultarAdministradoresHabilitados);
-router.options("/login", cors());
 router.post("/login", loginAdministrador);
 router.post(
   "/register",

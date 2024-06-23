@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const { check } = require("express-validator");
 const multer = require("../middleware/multer");
 const {
@@ -14,8 +13,6 @@ const {
 const router = express.Router();
 
 router.get("/habilitados", consultarProfesoresHabilitados);
-router.options("/login", cors());
-
 router.post("/login", loginProfesor);
 router.post(
   "/register",
