@@ -13,9 +13,9 @@ const {
 const router = express.Router();
 
 router.get("/unaClase/:id", consultarUnaClase);
+router.get("/habilitadas", consultarClasesHabilitadas);
 router.delete("/:id", eliminarClase);
 router.post("/:id", cambiarEstadoClase);
-router.get("/habilitadas", consultarClasesHabilitadas);
 router.get("/:categoria", consultarClasesCategoria);
 router.get("/", consultarClases);
 router.post(
