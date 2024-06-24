@@ -12,6 +12,36 @@ const {
 } = require("../controllers/administradores.controllers");
 const router = express.Router();
 
+router.put(
+  "/editar/:id",
+  [
+    check("nombre", "Campo nombre vacío").notEmpty(),
+    check("nombre", "El nombre debe tener entre 2 y 50 caracteres").isLength({
+      min: 2,
+      max: 50,
+    }),
+    check("apellido", "Campo apellido vacío").notEmpty(),
+    check(
+      "apellido",
+      "El apellido debe tener entre 2 y 50 caracteres"
+    ).isLength({
+      min: 2,
+      max: 50,
+    }),
+    check("email", "Campo email vacío").notEmpty(),
+    check("email", "El email debe tener entre 10 y 70 caracteres").isLength({
+      min: 10,
+      max: 70,
+    }),
+    check("email", "El email no es válido").isEmail(),
+    check("telefono", "Campo telefono vacío").notEmpty(),
+    check("telefono", "El telefono debe tener 10 caracteres").isLength({
+      min: 10,
+      max: 10,
+    }),
+  ],
+  actualizarAdministrador
+);
 router.get("/habilitados", consultarAdministradoresHabilitados);
 router.post("/login", loginAdministrador);
 router.post(
@@ -60,37 +90,7 @@ router.post(
   ],
   registroAdministrador
 );
-router.put(
-  "/:id",
-  [
-    check("nombre", "Campo nombre vacío").notEmpty(),
-    check("nombre", "El nombre debe tener entre 2 y 50 caracteres").isLength({
-      min: 2,
-      max: 50,
-    }),
-    check("apellido", "Campo apellido vacío").notEmpty(),
-    check(
-      "apellido",
-      "El apellido debe tener entre 2 y 50 caracteres"
-    ).isLength({
-      min: 2,
-      max: 50,
-    }),
-    check("email", "Campo email vacío").notEmpty(),
-    check("email", "El email debe tener entre 10 y 70 caracteres").isLength({
-      min: 10,
-      max: 70,
-    }),
-    check("email", "El email no es válido").isEmail(),
-    check("telefono", "Campo telefono vacío").notEmpty(),
-    check("telefono", "El telefono debe tener 10 caracteres").isLength({
-      min: 10,
-      max: 10,
-    }),
-  ],
-  actualizarAdministrador
-);
-router.post("/:id", cambioEstadoAdministrador);
+router.put("/:id", cambioEstadoAdministrador);
 router.delete("/:id", eliminarAdministrador);
 router.get("/", consultarAdministradores);
 

@@ -34,7 +34,7 @@ const AdministradoresSchema = new Schema({
   },
   deleted: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 });
 
