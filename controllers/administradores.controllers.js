@@ -139,7 +139,7 @@ const cambioEstadoAdministrador = async (req, res) => {
       administrador.deleted = false;
       await administrador.save();
       res
-        .status(400)
+        .status(200)
         .json({ message: "Administrador habilitado con éxito", administrador });
       return;
     }
@@ -169,7 +169,7 @@ const actualizarAdministrador = async (req, res) => {
       { nombre, apellido, email, telefono },
       { new: true }
     );
-    if (!administrador || administrador.deleted) {
+    if (!administrador) {
       return res.status(404).json({ message: "Administrador no encontrado" });
     }
     res
@@ -178,17 +178,15 @@ const actualizarAdministrador = async (req, res) => {
   } catch (error) {
     console.log(error);
     res
-      .status(400)
+      .status(409)
       .json({ message: "Error al actualizar el administrador", error });
   }
 };
 
 const eliminarAdministrador = async (req, res) => {
   try {
-    const administrador = await AdministradoresModel.findByIdAndUpdate(
-      req.params.id,
-      { deleted: true },
-      { new: true }
+    const administrador = await AdministradoresModel.findByIdAndDelete(
+      req.params.id
     );
     if (!administrador) {
       return res.status(404).json({ message: "Administrador no encontrado" });
@@ -202,6 +200,24 @@ const eliminarAdministrador = async (req, res) => {
   }
 };
 
+const obtenerDatosUsuario = async (req, res) => {
+  try {
+    const id = req.id;
+    const usuario = await AdministradoresModel.findById(id);
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    res.status(200).json({
+      message: "Usuario encontrado",
+      usuario,
+    });
+    console.log(usuario);
+  } catch (error) {
+    console.log("Error al obtener los datos del usuario:", error);
+    res.status(500).json({ message: "Error al obtener los datos del usuario" });
+  }
+};
+
 module.exports = {
   registroAdministrador,
   loginAdministrador,
@@ -210,4 +226,5 @@ module.exports = {
   cambioEstadoAdministrador,
   actualizarAdministrador,
   eliminarAdministrador,
+  obtenerDatosUsuario,
 };
