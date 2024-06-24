@@ -1,8 +1,8 @@
-require("dotenv").config();
-require("../DB/config");
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+require("dotenv").config();
+require("../DB/config");
 
 class Servidor {
   constructor() {
@@ -23,6 +23,10 @@ class Servidor {
     this.app.use("/api/profesores", require("../routes/profesores.routes"));
     this.app.use("/api/reservas", require("../routes/reservas.routes"));
     this.app.use("/api/clases", require("../routes/clases.routes"));
+    this.app.use(
+      "/api/administradores",
+      require("../routes/administradores.routes")
+    );
     this.app.use("/api/planes", require("../routes/planes.routes"));
     this.app.use("/api/categorias", require("../routes/categorias.routes"));
     this.app.use("/api/productos", require("../routes/productos.routes"));

@@ -12,11 +12,11 @@ const { check } = require("express-validator");
 const multer = require("../middleware/multer");
 const router = express.Router();
 
-router.get("/prodHabilitados", ObtenerProdHabilitados);
-router.get("/", ConsultarProductos);
-router.post("/", CargarProducto);
-router.put("/:id", ActualizarProducto);
 router.put("/cambioEstadoProducto/:id", CambioEstadoProducto);
+router.get("/prodHabilitados", ObtenerProdHabilitados);
+router.put("/:id", ActualizarProducto);
 router.delete("/:id", EliminarProdFisicamente);
+router.get("/", ConsultarProductos);
+router.post("/", multer.single("foto"), CargarProducto);
 
 module.exports = router;

@@ -9,7 +9,9 @@ const {
   cambioEstadoAdministrador,
   actualizarAdministrador,
   eliminarAdministrador,
+  obtenerDatosUsuario,
 } = require("../controllers/administradores.controllers");
+const obtenerDatos = require("../middleware/obtenerDatos");
 const router = express.Router();
 
 router.put(
@@ -43,6 +45,8 @@ router.put(
   actualizarAdministrador
 );
 router.get("/habilitados", consultarAdministradoresHabilitados);
+router.get("/datosUsuario", obtenerDatos(), obtenerDatosUsuario);
+
 router.post("/login", loginAdministrador);
 router.post(
   "/register",

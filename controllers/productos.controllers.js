@@ -1,5 +1,5 @@
-const { validationResult } = require("express-validator");
 const ProductosModel = require("../models/productosSchema");
+const cloudinary = require("../middleware/cloudinary");
 
 const ObtenerProdHabilitados = async (req, res) => {
   try {
@@ -26,14 +26,32 @@ const ConsultarProductos = async (req, res) => {
 
 const CargarProducto = async (req, res) => {
   try {
-    const nuevoProducto = new ProductosModel(req.body);
-    await nuevoProducto.save();
-    if (!nuevoProducto) {
-      return res.json({ msg: "No se pudo cargar el producto" });
+    const { nombre } = req.body;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ msg: "No se ha proporcionado una imagen" });
     }
-    res.status(200).json({ msg: "Productos cargados", nuevoProducto });
+
+    const results = await cloudinary.uploader.upload(file.path, {
+      transformation: [
+        { width: 1000, crop: "scale" },
+        { quality: "auto:best" },
+        { fetch_format: "auto" },
+      ],
+    });
+
+    const nuevoProducto = new ProductosModel({
+      nombre,
+      foto: results.secure_url,
+    });
+
+    await nuevoProducto.save();
+    res.status(200).json({ msg: "Producto cargado", nuevoProducto });
   } catch (error) {
-    res.status(500).json({ msg: "ERROR. Productos no encontrados", error });
+    res
+      .status(500)
+      .json({ msg: "ERROR. No se pudo cargar el producto", error });
   }
 };
 
@@ -63,19 +81,14 @@ const CambioEstadoProducto = async (req, res) => {
       return res.status(404).json({ msg: "Producto no encontrado." });
     }
 
-    if (producto.deleted) {
-      producto.deleted = false;
-      await producto.save();
-      res.status(200).json({ msg: "El producto fue habilitado" });
-    } else {
-      producto.deleted = true;
-      await producto.save();
-      res.status(200).json({ msg: "El producto fue deshabilitado" });
-    }
+    producto.deleted = !producto.deleted;
+    await producto.save();
+    const estadoMsg = producto.deleted ? "deshabilitado" : "habilitado";
+    res.status(200).json({ msg: `El producto fue ${estadoMsg}` });
   } catch (error) {
     res
       .status(500)
-      .json({ msg: "Error al cambiar el estado el producto", error });
+      .json({ msg: "Error al cambiar el estado del producto", error });
   }
 };
 

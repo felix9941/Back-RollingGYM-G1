@@ -200,6 +200,24 @@ const eliminarAdministrador = async (req, res) => {
   }
 };
 
+const obtenerDatosUsuario = async (req, res) => {
+  try {
+    const id = req.id;
+    const usuario = await AdministradoresModel.findById(id);
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    res.status(200).json({
+      message: "Usuario encontrado",
+      usuario,
+    });
+    console.log(usuario);
+  } catch (error) {
+    console.log("Error al obtener los datos del usuario:", error);
+    res.status(500).json({ message: "Error al obtener los datos del usuario" });
+  }
+};
+
 module.exports = {
   registroAdministrador,
   loginAdministrador,
@@ -208,4 +226,5 @@ module.exports = {
   cambioEstadoAdministrador,
   actualizarAdministrador,
   eliminarAdministrador,
+  obtenerDatosUsuario,
 };
