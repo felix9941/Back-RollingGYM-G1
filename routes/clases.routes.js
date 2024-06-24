@@ -9,9 +9,11 @@ const {
   consultarClasesCategoria,
   consultarClasesHabilitadas,
   consultarUnaClase,
+  agregarReserva,
 } = require("../controllers/clases.controllers");
 const router = express.Router();
 
+router.put("/reserva/:id", agregarReserva);
 router.get("/unaClase/:id", consultarUnaClase);
 router.get("/habilitadas", consultarClasesHabilitadas);
 router.delete("/:id", eliminarClase);
