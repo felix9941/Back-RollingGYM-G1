@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 
 const crearReserva = async (req, res) => {
   try {
-    const idReserva = req.params.id;
-    const idClase = req.body.idClase;
+    const idReserva = req.reservas;
+    const idClase = req.params.idClase;
     if (!mongoose.Types.ObjectId.isValid(idReserva)) {
       return res.status(400).send("Id Reserva inválido");
     }
@@ -13,7 +13,7 @@ const crearReserva = async (req, res) => {
     }
     const reserva = await ReservasModel.findById(idReserva);
     if (reserva.clases.includes(idClase)) {
-      return res.status(400).send("La clase ya se encuentra en las reservas");
+      return res.status(405).send("La clase ya se encuentra en las reservas");
     }
     const agregarClase = await ReservasModel.findByIdAndUpdate(
       { _id: idReserva },
