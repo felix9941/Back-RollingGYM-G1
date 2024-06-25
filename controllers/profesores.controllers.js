@@ -230,6 +230,23 @@ const eliminarProfesor = async (req, res) => {
   }
 };
 
+const traerUnProfesor = async (req, res) => {
+  try {
+    const profesor = await ProfesoresModel.findOne({
+      _id: req.params.id,
+    });
+    if (!profesor) {
+      return res
+        .status(400)
+        .json({ msg: "No se encuentra el profesor - ID incorrecto" });
+    }
+    res.status(200).json({ msg: "Profesor:", profesor });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "ERROR: El profesor no fue encontrado" });
+  }
+};
+
 module.exports = {
   registroProfesor,
   loginProfesor,
@@ -238,4 +255,5 @@ module.exports = {
   cambioEstadoProfesor,
   actualizarProfesor,
   eliminarProfesor,
+  traerUnProfesor,
 };

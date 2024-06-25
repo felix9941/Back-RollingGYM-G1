@@ -9,6 +9,7 @@ const {
   cambioEstadoProfesor,
   actualizarProfesor,
   eliminarProfesor,
+  traerUnProfesor,
 } = require("../controllers/profesores.controllers");
 const router = express.Router();
 
@@ -93,6 +94,7 @@ router.put(
   multer.single("foto"),
   actualizarProfesor
 );
+router.get("/:id", traerUnProfesor);
 router.delete("/:id", eliminarProfesor);
 router.get("/", consultarProfesores);
 
