@@ -43,6 +43,19 @@ const consultarClases = async (req, res) => {
   }
 };
 
+const consultarUnaClase = async (req, res) => {
+  try {
+    const clase = await ClasesModel.findById(req.params.id);
+    if (!clase) {
+      return res.status(404).json({ message: "No se encontro la clase" });
+    }
+    res.status(200).json({ message: "Clase encontrada", clase });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al encontrar la clase", error });
+  }
+};
+
 const cambiarEstadoClase = async (req, res) => {
   try {
     const clase = await ClasesModel.findById(req.params.id);
@@ -53,7 +66,7 @@ const cambiarEstadoClase = async (req, res) => {
     if (clase.deleted === true) {
       clase.deleted = false;
       await clase.save();
-      res.status(400).json({ message: "Clase habilitada con exito", clase });
+      res.status(200).json({ message: "Clase habilitada con exito", clase });
       return;
     }
     clase.deleted = true;
@@ -64,6 +77,30 @@ const cambiarEstadoClase = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error al cambiar el estado de la clase", error });
+  }
+};
+
+const agregarReserva = async (req, res) => {
+  try {
+    const clase = await ClasesModel.findById(req.params.id);
+    if (!clase) {
+      res.status(404).json({ message: "La clase no existe" });
+      return;
+    }
+    if (clase.reservas < clase.cupo) {
+      clase.reservas++;
+      await clase.save();
+      res.status(200).json({ message: "Reserva agregada con exito", clase });
+      return;
+    } else if (clase.reservas >= clase.cupo) {
+      res.status(400).json({
+        message: "La clase esta llena, no se pudo agregar la reserva",
+      });
+      return;
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al generar la reserva", error });
   }
 };
 
@@ -108,4 +145,6 @@ module.exports = {
   crearClase,
   consultarClases,
   consultarClasesHabilitadas,
+  consultarUnaClase,
+  agregarReserva,
 };

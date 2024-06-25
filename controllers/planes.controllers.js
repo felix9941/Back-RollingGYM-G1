@@ -73,10 +73,26 @@ const actualizarPlan = async (req, res) => {
   }
 };
 
+const ObtenerPlanPorId = async (req, res) => {
+  try {
+    const plan = await PlanesModel.findById({ deleted: false });
+    if (!plan) {
+      return res.status(404).json({ msg: "Plan no encontrado" });
+    }
+    res.status(200).json({ msg: "Plan obtenido", plan });
+  } catch (error) {
+    res.status(500).json({
+      msg: "ERROR. No se pudo obtener el plan",
+      error,
+    });
+  }
+};
+
 module.exports = {
   ObtenerPlanesHabilitados,
   consultarPlanes,
   CargarPlan,
   CambioEstadoPlan,
   actualizarPlan,
+  ObtenerPlanPorId,
 };
