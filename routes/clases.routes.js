@@ -17,7 +17,7 @@ router.put("/reserva/:id", agregarReserva);
 router.get("/unaClase/:id", consultarUnaClase);
 router.get("/habilitadas", consultarClasesHabilitadas);
 router.delete("/:id", eliminarClase);
-router.post("/:id", cambiarEstadoClase);
+router.put("/:id", cambiarEstadoClase);
 router.get("/:categoria", consultarClasesCategoria);
 router.get("/", consultarClases);
 router.post(
