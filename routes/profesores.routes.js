@@ -1,6 +1,6 @@
 const express = require("express");
-const auth = require("../middleware/auth");
 const { check } = require("express-validator");
+const multer = require("../middleware/multer");
 const {
   registroProfesor,
   loginProfesor,
@@ -9,6 +9,7 @@ const {
   cambioEstadoProfesor,
   actualizarProfesor,
   eliminarProfesor,
+  traerUnProfesor,
 } = require("../controllers/profesores.controllers");
 const router = express.Router();
 
@@ -58,8 +59,10 @@ router.post(
       minSymbols: 1,
     }),
   ],
+  multer.single("foto"),
   registroProfesor
 );
+router.put("/estadoProfesor/:id", cambioEstadoProfesor);
 router.put(
   "/:id",
   [
@@ -88,9 +91,10 @@ router.put(
       max: 10,
     }),
   ],
+  multer.single("foto"),
   actualizarProfesor
 );
-router.post("/:id", cambioEstadoProfesor);
+router.get("/:id", traerUnProfesor);
 router.delete("/:id", eliminarProfesor);
 router.get("/", consultarProfesores);
 
