@@ -207,16 +207,18 @@ const obtenerDatosUsuario = async (req, res) => {
     const id = req.id;
     const usuario = await AdministradoresModel.findById(id);
     if (!usuario) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.status(404).json({ message: "Administrador no encontrado" });
     }
     res.status(200).json({
-      message: "Usuario encontrado",
+      message: "Administrador encontrado",
       usuario,
     });
-    console.log(usuario);
   } catch (error) {
-    console.log("Error al obtener los datos del usuario:", error);
-    res.status(500).json({ message: "Error al obtener los datos del usuario" });
+    console.log(error);
+    res.status(500).json({
+      message: "Error al consultar los datos de administrador",
+      error,
+    });
   }
 };
 

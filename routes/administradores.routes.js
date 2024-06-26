@@ -14,8 +14,8 @@ const {
 const obtenerDatos = require("../middleware/obtenerDatos");
 const router = express.Router();
 
-router.get("/habilitados", consultarAdministradoresHabilitados);
 router.get("/datosUsuario", obtenerDatos(), obtenerDatosUsuario);
+router.get("/habilitados", consultarAdministradoresHabilitados);
 
 router.post("/login", loginAdministrador);
 router.post(
