@@ -247,6 +247,58 @@ const traerUnProfesor = async (req, res) => {
   }
 };
 
+const obtenerDatosUsuario = async (req, res) => {
+  try {
+    const id = req.id;
+    const usuario = await ProfesoresModel.findById(id);
+    if (!usuario) {
+      return res.status(404).json({ message: "Profesor no encontrado" });
+    }
+    res.status(200).json({
+      message: "Profesor encontrado",
+      usuario,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error al consultar los datos de profesor",
+      error,
+    });
+  }
+};
+
+const actualizarDatosPropios = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const { nombre, apellido, email, telefono, contrasenia } = req.body;
+
+    const salt = bcrypt.genSaltSync(10);
+    const contraseniaEncriptada = bcrypt.hashSync(contrasenia, salt);
+
+    const profesor = await ProfesoresModel.findByIdAndUpdate(
+      req.params.id,
+      { nombre, apellido, email, telefono, contrasenia: contraseniaEncriptada },
+      { new: true }
+    );
+
+    if (!profesor) {
+      return res.status(404).json({ message: "Profesor no encontrado" });
+    }
+
+    res.status(200).json({
+      message: "Profesor actualizado con éxito",
+      profesor,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(409).json({ message: "Error al actualizar el profesor", error });
+  }
+};
+
 module.exports = {
   registroProfesor,
   loginProfesor,
@@ -256,4 +308,6 @@ module.exports = {
   actualizarProfesor,
   eliminarProfesor,
   traerUnProfesor,
+  obtenerDatosUsuario,
+  actualizarDatosPropios,
 };
