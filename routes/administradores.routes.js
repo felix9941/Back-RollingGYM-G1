@@ -44,6 +44,7 @@ router.put(
   ],
   actualizarAdministrador
 );
+
 router.get("/habilitados", consultarAdministradoresHabilitados);
 router.get("/datosUsuario", obtenerDatos(), obtenerDatosUsuario);
 
