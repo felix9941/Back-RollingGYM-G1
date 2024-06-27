@@ -77,7 +77,7 @@ const registroAdministrador = async (req, res) => {
         newAdministrador,
       });
     } else {
-      res.status(500).json({ message: "Error nodemailer", error });
+      res.status(500).json({ message: "Error nodemailer" });
     }
   } catch (error) {
     console.log(error);
@@ -183,6 +183,40 @@ const actualizarAdministrador = async (req, res) => {
   }
 };
 
+const actualizarDatosPropios = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const { nombre, apellido, email, telefono, contrasenia } = req.body;
+
+    const salt = bcrypt.genSaltSync(10);
+    const contraseniaEncriptada = bcrypt.hashSync(contrasenia, salt);
+
+    const administrador = await AdministradoresModel.findByIdAndUpdate(
+      req.params.id,
+      { nombre, apellido, email, telefono, contrasenia: contraseniaEncriptada },
+      { new: true }
+    );
+
+    if (!administrador) {
+      return res.status(404).json({ message: "Administrador no encontrado" });
+    }
+
+    res.status(200).json({
+      message: "Administrador actualizado con éxito",
+      administrador,
+    });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(409)
+      .json({ message: "Error al actualizar el administrador", error });
+  }
+};
+
 const eliminarAdministrador = async (req, res) => {
   try {
     const administrador = await AdministradoresModel.findByIdAndDelete(
@@ -227,6 +261,7 @@ module.exports = {
   consultarAdministradoresHabilitados,
   cambioEstadoAdministrador,
   actualizarAdministrador,
+  actualizarDatosPropios,
   eliminarAdministrador,
   obtenerDatosUsuario,
 };
