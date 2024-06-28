@@ -125,6 +125,24 @@ const consultarClasesCategoria = async (req, res) => {
   }
 };
 
+const consultarClasesProfesor = async (req, res) => {
+  try {
+    const idProfe = req.id;
+    const clases = await ClasesModel.find({
+      idProfesor: req.id,
+      deleted: false,
+    });
+    res.status(200).json({
+      message: `Clases de ${req.params.categoria} encontradas`,
+      clases,
+      idProfe,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al encontrar las clases", error });
+  }
+};
+
 const consultarClasesHabilitadas = async (req, res) => {
   try {
     const clases = await ClasesModel.find({ deleted: false });
@@ -147,4 +165,5 @@ module.exports = {
   consultarClasesHabilitadas,
   consultarUnaClase,
   agregarReserva,
+  consultarClasesProfesor,
 };

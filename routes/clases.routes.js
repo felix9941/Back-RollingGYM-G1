@@ -1,5 +1,6 @@
 const express = require("express");
 const auth = require("../middleware/auth");
+const obtenerDatos = require("../middleware/obtenerDatos");
 const { check } = require("express-validator");
 const {
   crearClase,
@@ -10,12 +11,14 @@ const {
   consultarClasesHabilitadas,
   consultarUnaClase,
   agregarReserva,
+  consultarClasesProfesor,
 } = require("../controllers/clases.controllers");
 const router = express.Router();
 
 router.put("/reserva/:id", agregarReserva);
 router.get("/unaClase/:id", consultarUnaClase);
 router.get("/habilitadas", consultarClasesHabilitadas);
+router.get("/profesor", obtenerDatos(), consultarClasesProfesor);
 router.delete("/:id", eliminarClase);
 router.put("/:id", cambiarEstadoClase);
 router.get("/:categoria", consultarClasesCategoria);
