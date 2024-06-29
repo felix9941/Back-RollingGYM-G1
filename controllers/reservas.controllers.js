@@ -1,4 +1,5 @@
 const ReservasModel = require("../models/reservasSchema");
+const ClasesModel = require("../models/clasesSchema");
 const mongoose = require("mongoose");
 
 const crearReserva = async (req, res) => {
@@ -32,7 +33,7 @@ const crearReserva = async (req, res) => {
 
 const eliminarReserva = async (req, res) => {
   try {
-    const idReserva = req.params.id;
+    const idReserva = req.reservas;
     const idClase = req.body.idClase;
     if (!mongoose.Types.ObjectId.isValid(idReserva)) {
       return res.status(400).send("Id Reserva inválido");
@@ -61,7 +62,29 @@ const eliminarReserva = async (req, res) => {
   }
 };
 
+const obtenerReservasPorCliente = async (req, res) => {
+  try {
+    const idReserva = req.reservas;
+    if (!mongoose.Types.ObjectId.isValid(idReserva)) {
+      return res.status(400).send("Id Reserva inválido");
+    }
+
+    const reserva = await ReservasModel.findById(idReserva);
+    if (!reserva) {
+      return res.status(404).send("Reserva no encontrada");
+    }
+
+    const clases = await ClasesModel.find({
+      _id: { $in: reserva.clases },
+    });
+    res.status(200).json({ message: "Reservas obtenidas", clases });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "No se pudo obtener las reservas", error });
+  }
+};
 module.exports = {
   crearReserva,
   eliminarReserva,
+  obtenerReservasPorCliente,
 };
