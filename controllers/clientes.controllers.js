@@ -245,6 +245,58 @@ const editarCliente = async (req, res) => {
   }
 };
 
+const obtenerDatosUsuario = async (req, res) => {
+  try {
+    const id = req.id;
+    const usuario = await ClientesModel.findById(id);
+    if (!usuario) {
+      return res.status(404).json({ message: "Cliente no encontrado" });
+    }
+    res.status(200).json({
+      message: "Cliente encontrado",
+      usuario,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error al consultar los datos de cliente",
+      error,
+    });
+  }
+};
+
+const actualizarDatosPropios = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const { nombre, apellido, email, telefono, contrasenia } = req.body;
+
+    const salt = bcrypt.genSaltSync(10);
+    const contraseniaEncriptada = bcrypt.hashSync(contrasenia, salt);
+
+    const cliente = await ClientesModel.findByIdAndUpdate(
+      req.params.id,
+      { nombre, apellido, email, telefono, contrasenia: contraseniaEncriptada },
+      { new: true }
+    );
+
+    if (!cliente) {
+      return res.status(404).json({ message: "Cliente no encontrado" });
+    }
+
+    res.status(200).json({
+      message: "Cliente actualizado con éxito",
+      cliente,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(409).json({ message: "Error al actualizar el cliente", error });
+  }
+};
+
 module.exports = {
   registroCliente,
   loginCliente,
@@ -255,4 +307,6 @@ module.exports = {
   vencimientoCuotaCliente,
   eliminarCliente,
   editarCliente,
+  obtenerDatosUsuario,
+  actualizarDatosPropios,
 };
