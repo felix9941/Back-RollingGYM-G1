@@ -34,15 +34,11 @@ const ClientesSchema = new Schema({
   },
   plan: {
     type: String,
-    default: "ninguno",
+    default: "Ninguno",
   },
   deleted: {
     type: Boolean,
     default: true,
-  },
-  cuotaPaga: {
-    type: Boolean,
-    default: false,
   },
   expiracionCuota: {
     type: Number,

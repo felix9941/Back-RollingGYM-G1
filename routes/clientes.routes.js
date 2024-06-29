@@ -17,7 +17,7 @@ const {
 const router = express.Router();
 const obtenerDatos = require("../middleware/obtenerDatos");
 
-router.post(
+router.put(
   "/editar/:id",
   [
     check("nombre", "Campo nombre vacio").notEmpty(),
@@ -36,19 +36,21 @@ router.post(
       max: 70,
     }),
     check("telefono", "Campo telefono vacio").notEmpty(),
-    check("telefono", "El telefono es incorrecto").isLength({
+    check(
+      "telefono",
+      "El telefono es incorrecto, debe tener 10 digitos"
+    ).isLength({
       min: 10,
       max: 10,
     }),
   ],
   editarCliente
 );
-router.post("/estado/:id", cambioEstadoCliente);
-router.post(
+router.put("/estado/:id", cambioEstadoCliente);
+router.put(
   "/pago/:id",
   [
     check("plan", "Campo plan vacio").notEmpty(),
-    check("cuotaPaga", "Campo cuotaPaga vacio").notEmpty(),
     check("expiracionCuota", "Campo expiracionCuota vacio").notEmpty(),
   ],
   pagoCuotaCliente
@@ -73,7 +75,10 @@ router.post(
       max: 70,
     }),
     check("telefono", "Campo telefono vacio").notEmpty(),
-    check("telefono", "El telefono es incorrecto").isLength({
+    check(
+      "telefono",
+      "El telefono es incorrecto, debe tener 10 digitos"
+    ).isLength({
       min: 10,
       max: 10,
     }),
