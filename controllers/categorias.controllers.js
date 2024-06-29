@@ -45,15 +45,15 @@ const ObtenerCategoriasPorPlan = async (req, res) => {
 
     let categoria = ["hola"];
 
-    if (plan === "ninguno") {
+    if (plan === "Ninguno") {
       categoria = [];
-    } else if (plan === "full") {
+    } else if (plan === "Plan Full") {
       categoria = categoriasHabilitadas;
-    } else if (plan === "clases") {
+    } else if (plan === "Plan Clases") {
       categoria = categoriasHabilitadas.filter((cat) =>
         cat.idPlanes.some((id) => id.toString() === "66677b6f5b741422f3a2fee0")
       );
-    } else if (plan === "aparatos") {
+    } else if (plan === "Plan Aparatos") {
       categoria = categoriasHabilitadas.filter((cat) =>
         cat.idPlanes.some((id) => id.toString() === "66677b045b741422f3a2fede")
       );
@@ -178,6 +178,39 @@ const EliminarCatFisicamente = async (req, res) => {
   }
 };
 
+const ObtenerCategoriasPorPlanId = async (req, res) => {
+  try {
+    const planId = req.params.planId; // Obtener planId de params
+
+    const categoriasHabilitadas = await CategoriasModel.find({
+      deleted: false,
+    });
+
+    if (!categoriasHabilitadas || categoriasHabilitadas.length === 0) {
+      return res
+        .status(200)
+        .json({ msg: "No hay categorías habilitadas", categoriasHabilitadas });
+    }
+
+    const categoria = categoriasHabilitadas.filter((cat) =>
+      cat.idPlanes.some((id) => id.toString() === planId)
+    );
+
+    if (!categoria || categoria.length === 0) {
+      res
+        .status(200)
+        .json({ msg: "No hay categorías para este plan", categoria });
+    } else {
+      res.status(200).json({ msg: "Categorias para este plan", categoria });
+    }
+  } catch (error) {
+    res.status(500).json({
+      msg: "ERROR. No se pudieron obtener las categorias para el plan especificado",
+      error,
+    });
+  }
+};
+
 module.exports = {
   ObtenerCategoriasHabilitadas,
   ConsultarCategorias,
@@ -186,4 +219,5 @@ module.exports = {
   CambioEstadoCategoria,
   EliminarCatFisicamente,
   ObtenerCategoriasPorPlan,
+  ObtenerCategoriasPorPlanId,
 };
