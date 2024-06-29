@@ -45,15 +45,15 @@ const ObtenerCategoriasPorPlan = async (req, res) => {
 
     let categoria = ["hola"];
 
-    if (plan === "ninguno") {
+    if (plan === "Ninguno") {
       categoria = [];
-    } else if (plan === "full") {
+    } else if (plan === "Plan Full") {
       categoria = categoriasHabilitadas;
-    } else if (plan === "clases") {
+    } else if (plan === "Plan Clases") {
       categoria = categoriasHabilitadas.filter((cat) =>
         cat.idPlanes.some((id) => id.toString() === "66677b6f5b741422f3a2fee0")
       );
-    } else if (plan === "aparatos") {
+    } else if (plan === "Plan Aparatos") {
       categoria = categoriasHabilitadas.filter((cat) =>
         cat.idPlanes.some((id) => id.toString() === "66677b045b741422f3a2fede")
       );
