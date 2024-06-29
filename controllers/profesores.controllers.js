@@ -1,4 +1,6 @@
+const ClientesModel = require("../models/clientesSchema");
 const ProfesoresModel = require("../models/profesoresSchema");
+const AdministradoresModel = require("../models/administradoresSchema");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
@@ -14,9 +16,7 @@ const consultarProfesores = async (req, res) => {
     res.status(200).json({ message: "Profesores encontrados", profesores });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ message: "Error al consultar los profesores", error });
+    res.status(500).json({ message: "Error al consultar profesores", error });
   }
 };
 
@@ -45,13 +45,17 @@ const registroProfesor = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const profesorExists = await ProfesoresModel.findOne({
+    const clienteExists = await ClientesModel.findOne({
       email: req.body.email,
     });
-    if (profesorExists) {
-      res
-        .status(409)
-        .json({ message: "El profesor ya se encuentra registrado" });
+    const adminExists = await AdministradoresModel.findOne({
+      email: req.body.email,
+    });
+    const profeExists = await ProfesoresModel.findOne({
+      email: req.body.email,
+    });
+    if (clienteExists || adminExists || profeExists) {
+      res.status(409).json({ message: "El email ya esta registrado" });
       return;
     }
     const newProfesor = new ProfesoresModel(req.body);
@@ -65,7 +69,7 @@ const registroProfesor = async (req, res) => {
       await newProfesor.save();
       res
         .status(200)
-        .json({ message: "Profesor fue ccreado con éxito", newProfesor });
+        .json({ message: "Profesor fue creado con éxito", newProfesor });
     } else {
       res.status(500).json({ message: "Error nodemailer", error });
     }
@@ -150,10 +154,10 @@ const actualizarProfesor = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { nombre, apellido, email, celular, foto } = req.body;
+    const { nombre, apellido, email, telefono, foto } = req.body;
     const profesor = await ProfesoresModel.findByIdAndUpdate(
       req.params.id,
-      { nombre, apellido, email, celular, foto },
+      { nombre, apellido, email, telefono, foto },
       { new: true }
     );
     if (!profesor || profesor.deleted) {

@@ -11,10 +11,10 @@ const { check } = require("express-validator");
 const multer = require("../middleware/multer");
 const router = express.Router();
 
+router.put("/cambioEstadoPlan/:id", CambioEstadoPlan);
 router.get("/planesHabilitados", ObtenerPlanesHabilitados);
+router.put("/:id", actualizarPlan);
 router.get("/", consultarPlanes);
 router.post("/", CargarPlan);
-router.put("/cambioEstadoPlan/:id", CambioEstadoPlan);
-router.put("/:id", actualizarPlan);
 
 module.exports = router;

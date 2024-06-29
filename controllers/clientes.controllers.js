@@ -1,4 +1,6 @@
 const ClientesModel = require("../models/clientesSchema");
+const ProfesoresModel = require("../models/profesoresSchema");
+const AdministradoresModel = require("../models/administradoresSchema");
 const ReservasModel = require("../models/reservasSchema");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
@@ -46,8 +48,14 @@ const registroCliente = async (req, res) => {
     const clienteExists = await ClientesModel.findOne({
       email: req.body.email,
     });
-    if (clienteExists) {
-      res.status(409).json({ message: "El cliente ya existe" });
+    const adminExists = await AdministradoresModel.findOne({
+      email: req.body.email,
+    });
+    const profeExists = await ProfesoresModel.findOne({
+      email: req.body.email,
+    });
+    if (clienteExists || adminExists || profeExists) {
+      res.status(409).json({ message: "El email ya esta registrado" });
       return;
     }
     const newCliente = new ClientesModel(req.body);
@@ -190,12 +198,25 @@ const vencimientoCuotaCliente = async (req, res) => {
 
 const eliminarCliente = async (req, res) => {
   try {
-    const cliente = await ClientesModel.findByIdAndDelete(req.params.id);
+    const cliente = await ClientesModel.findById(req.params.id);
     if (!cliente) {
       return res.status(404).json({ message: "Cliente no encontrado" });
     }
+    const idReserva = cliente.idReservas;
+    const reservaEliminada = await ReservasModel.findByIdAndDelete(idReserva);
+    const clienteEliminado = await ClientesModel.findByIdAndDelete(
+      req.params.id
+    );
+    if (!clienteEliminado) {
+      return res.status(404).json({ message: "Cliente no encontrado" });
+    }
 
-    res.status(200).json({ message: "Cliente eliminado con éxito", cliente });
+    res.status(200).json({
+      message1: "Cliente eliminado con éxito",
+      clienteEliminado,
+      message2: "Reserva del cliente eliminada con éxito",
+      reservaEliminada,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "No se pudo eliminar el cliente", error });
