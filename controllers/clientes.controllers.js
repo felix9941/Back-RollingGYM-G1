@@ -132,7 +132,7 @@ const cambioEstadoCliente = async (req, res) => {
       cliente.deleted = false;
       await cliente.save();
       res
-        .status(400)
+        .status(200)
         .json({ message: "Cliente habilitado con exito", cliente });
       return;
     }
@@ -155,13 +155,12 @@ const pagoCuotaCliente = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { plan, cuotaPaga, expiracionCuota } = req.body;
+    const { plan, expiracionCuota } = req.body;
     const expiracionCuotaMilisegundos = new Date(expiracionCuota).getTime();
     const updatedCliente = await ClientesModel.findByIdAndUpdate(
       { _id: req.params.id },
       {
         plan,
-        cuotaPaga,
         expiracionCuota: expiracionCuotaMilisegundos,
       },
       { new: true }
@@ -182,8 +181,7 @@ const vencimientoCuotaCliente = async (req, res) => {
     const updatedCliente = await ClientesModel.findByIdAndUpdate(
       { _id: req.params.id },
       {
-        plan: "ninguno",
-        cuotaPaga: false,
+        plan: "Ninguno",
       },
       { new: true }
     );
