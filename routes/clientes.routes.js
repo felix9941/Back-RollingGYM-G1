@@ -13,9 +13,11 @@ const {
   editarCliente,
   obtenerDatosUsuario,
   actualizarDatosPropios,
+  traerDatosCliente,
 } = require("../controllers/clientes.controllers");
 const router = express.Router();
 const obtenerDatos = require("../middleware/obtenerDatos");
+const datosCliente = require("../middleware/datosCliente");
 
 router.put(
   "/editar/:id",
@@ -55,7 +57,7 @@ router.put(
   ],
   pagoCuotaCliente
 );
-router.post("/vencimiento/:id", vencimientoCuotaCliente);
+router.put("/vencimiento/:id", vencimientoCuotaCliente);
 router.post(
   "/register",
   [
@@ -101,6 +103,7 @@ router.post(
   ],
   registroCliente
 );
+router.get("/datos", datosCliente(), traerDatosCliente);
 router.post("/login", loginCliente);
 
 router.put(

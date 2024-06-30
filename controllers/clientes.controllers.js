@@ -7,6 +7,13 @@ const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const { welcomeMessage } = require("../middleware/messages");
 
+const traerDatosCliente = async (req, res) => {
+  const plan = req.plan;
+  const vencimiento = req.vencimiento;
+  const id = req.id;
+  res.status(200).json({ message: "Datos del Cliente", plan, vencimiento, id });
+};
+
 const consultarClientes = async (req, res) => {
   try {
     const clientes = await ClientesModel.find();
@@ -105,6 +112,7 @@ const loginCliente = async (req, res) => {
         email: clienteExist.email,
         idReservas: clienteExist.idReservas,
         plan: clienteExist.plan,
+        vencimiento: clienteExist.expiracionCuota,
       },
     };
 
@@ -309,4 +317,5 @@ module.exports = {
   editarCliente,
   obtenerDatosUsuario,
   actualizarDatosPropios,
+  traerDatosCliente,
 };
