@@ -180,7 +180,7 @@ const EliminarCatFisicamente = async (req, res) => {
 
 const ObtenerCategoriasPorPlanId = async (req, res) => {
   try {
-    const planId = req.params.planId; // Obtener planId de params
+    const planId = req.params.planId;
 
     const categoriasHabilitadas = await CategoriasModel.find({
       deleted: false,
