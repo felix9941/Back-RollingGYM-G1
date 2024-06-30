@@ -5,7 +5,7 @@ const ReservasModel = require("../models/reservasSchema");
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
-const { welcomeMessage } = require("../middleware/messages");
+const { welcomeMessage, newClientMessage } = require("../middleware/messages");
 
 const traerDatosCliente = async (req, res) => {
   const plan = req.plan;
@@ -74,7 +74,11 @@ const registroCliente = async (req, res) => {
       newCliente.email,
       newCliente.nombre
     );
-    if (messageResponse === 200) {
+    const messageResponse2 = await newClientMessage(
+      newCliente.email,
+      newCliente.nombre
+    );
+    if (messageResponse === 200 && messageResponse2 === 200) {
       await newReservas.save();
       await newCliente.save();
       res.status(200).json({ message: "Cliente creado con exito", newCliente });
