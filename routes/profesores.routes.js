@@ -1,79 +1,47 @@
 const express = require("express");
-const auth = require("../middleware/auth");
 const { check } = require("express-validator");
+const multer = require("../middleware/multer");
 const {
-  registroCliente,
-  loginCliente,
-  consultarClientes,
-  consultarClientesHabilitados,
-  cambioEstadoCliente,
-  pagoCuotaCliente,
-  vencimientoCuotaCliente,
-  eliminarCliente,
-  editarCliente,
+  registroProfesor,
+  loginProfesor,
+  consultarProfesores,
+  consultarProfesoresHabilitados,
+  cambioEstadoProfesor,
+  actualizarProfesor,
+  eliminarProfesor,
+  traerUnProfesor,
   obtenerDatosUsuario,
   actualizarDatosPropios,
-} = require("../controllers/clientes.controllers");
+} = require("../controllers/profesores.controllers");
 const router = express.Router();
 const obtenerDatos = require("../middleware/obtenerDatos");
 
-router.post(
-  "/editar/:id",
-  [
-    check("nombre", "Campo nombre vacio").notEmpty(),
-    check("nombre", "El nombre debe tener entre 2 y 50 caracteres").isLength({
-      min: 2,
-      max: 50,
-    }),
-    check("apellido", "Campo apellido vacio").notEmpty(),
-    check(
-      "apellido",
-      "El apellido debe tener entre 2 y 50 caracteres"
-    ).isLength({ min: 2, max: 50 }),
-    check("email", "Campo email vacio").notEmpty(),
-    check("email", "El email debe tener entre 10 y 70 caracteres").isLength({
-      min: 10,
-      max: 70,
-    }),
-    check("telefono", "Campo telefono vacio").notEmpty(),
-    check("telefono", "El telefono es incorrecto").isLength({
-      min: 10,
-      max: 10,
-    }),
-  ],
-  editarCliente
-);
-router.post("/estado/:id", cambioEstadoCliente);
-router.post(
-  "/pago/:id",
-  [
-    check("plan", "Campo plan vacio").notEmpty(),
-    check("cuotaPaga", "Campo cuotaPaga vacio").notEmpty(),
-    check("expiracionCuota", "Campo expiracionCuota vacio").notEmpty(),
-  ],
-  pagoCuotaCliente
-);
-router.post("/vencimiento/:id", vencimientoCuotaCliente);
+router.get("/habilitados", consultarProfesoresHabilitados);
+router.post("/login", loginProfesor);
 router.post(
   "/register",
   [
-    check("nombre", "Campo nombre vacio").notEmpty(),
+    check("nombre", "Campo nombre vacío").notEmpty(),
     check("nombre", "El nombre debe tener entre 2 y 50 caracteres").isLength({
       min: 2,
       max: 50,
     }),
-    check("apellido", "Campo apellido vacio").notEmpty(),
+    check("apellido", "Campo apellido vacío").notEmpty(),
     check(
       "apellido",
       "El apellido debe tener entre 2 y 50 caracteres"
-    ).isLength({ min: 2, max: 50 }),
-    check("email", "Campo email vacio").notEmpty(),
-    check("email", "El email debe tener entre 10 y 70 caracteres").isLength({
-      min: 10,
-      max: 70,
+    ).isLength({
+      min: 2,
+      max: 50,
     }),
-    check("telefono", "Campo telefono vacio").notEmpty(),
-    check("telefono", "El telefono es incorrecto").isLength({
+    check("email", "Campo email vacío").notEmpty(),
+    check("email", "El email debe tener entre 10 y 50 caracteres").isLength({
+      min: 10,
+      max: 50,
+    }),
+    check("email", "El email no es válido").isEmail(),
+    check("telefono", "Campo telefono vacío").notEmpty(),
+    check("telefono", "El telefono debe tener 10 caracteres").isLength({
       min: 10,
       max: 10,
     }),
@@ -94,9 +62,41 @@ router.post(
       minSymbols: 1,
     }),
   ],
-  registroCliente
+  multer.single("foto"),
+  registroProfesor
 );
-router.post("/login", loginCliente);
+router.put("/estadoProfesor/:id", cambioEstadoProfesor);
+router.put(
+  "/:id",
+  [
+    check("nombre", "Campo nombre vacío").notEmpty(),
+    check("nombre", "El nombre debe tener entre 2 y 50 caracteres").isLength({
+      min: 2,
+      max: 50,
+    }),
+    check("apellido", "Campo apellido vacío").notEmpty(),
+    check(
+      "apellido",
+      "El apellido debe tener entre 2 y 50 caracteres"
+    ).isLength({
+      min: 2,
+      max: 50,
+    }),
+    check("email", "Campo email vacío").notEmpty(),
+    check("email", "El email debe tener entre 10 y 70 caracteres").isLength({
+      min: 10,
+      max: 70,
+    }),
+    check("email", "El email no es válido").isEmail(),
+    check("telefono", "Campo telefono vacío").notEmpty(),
+    check("telefono", "El telefono debe tener 10 caracteres").isLength({
+      min: 10,
+      max: 10,
+    }),
+  ],
+  multer.single("foto"),
+  actualizarProfesor
+);
 
 router.put(
   "/editarDatosPropios/:id",
@@ -146,8 +146,8 @@ router.put(
 );
 
 router.get("/datosUsuario", obtenerDatos(), obtenerDatosUsuario);
-router.get("/habilitados", consultarClientesHabilitados);
-router.get("/", consultarClientes);
-router.delete("/:id", eliminarCliente);
+router.get("/:id", traerUnProfesor);
+router.delete("/:id", eliminarProfesor);
+router.get("/", consultarProfesores);
 
 module.exports = router;

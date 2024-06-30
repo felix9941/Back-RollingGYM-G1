@@ -1,6 +1,6 @@
-const { Schema, model, Types } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const ClientesSchema = new Schema({
+const ProfesoresSchema = new Schema({
   nombre: {
     type: String,
     required: true,
@@ -17,7 +17,7 @@ const ClientesSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-    maxlength: [70, "El mail no puede tener más de 70 caracteres"],
+    maxlength: [50, "El mail no puede tener más de 50 caracteres"],
     minlength: [10, "El mail no puede tener menos de 10 caracteres"],
   },
   telefono: {
@@ -32,31 +32,22 @@ const ClientesSchema = new Schema({
     maxlength: [100, "La contraseña no puede tener más de 100 caracteres"],
     minlength: [8, "La contraseña no puede tener menos de 8 caracteres"],
   },
-  plan: {
-    type: String,
-    default: "ninguno",
-  },
   deleted: {
-    type: Boolean,
-    default: true,
-  },
-  cuotaPaga: {
     type: Boolean,
     default: false,
   },
-  expiracionCuota: {
-    type: Number,
-    default: Date.now(),
-  },
-  idReservas: {
-    type: Types.ObjectId,
+  foto: {
+    type: String,
+    default:
+      "https://res.cloudinary.com/dtnqgjjyk/image/upload/v1717465376/kpw6fimzrrmyk9mqrndu.jpg",
+    required: false,
   },
 });
 
-ClientesSchema.methods.toJSON = function () {
-  const { __v, contrasenia, ...cliente } = this.toObject();
-  return cliente;
+ProfesoresSchema.methods.toJSON = function () {
+  const { __v, password, ...profesor } = this.toObject();
+  return profesor;
 };
 
-const ClientesModel = model("clientes", ClientesSchema);
-module.exports = ClientesModel;
+const ProfesoresModel = model("profesores", ProfesoresSchema);
+module.exports = ProfesoresModel;
