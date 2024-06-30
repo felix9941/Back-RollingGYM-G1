@@ -3,7 +3,7 @@ const transporter = require("../middleware/nodemailer");
 const welcomeMessage = async (email, username) => {
   try {
     const info = await transporter.sendMail({
-      from: `"Administrador Power Gym 💪🏼" <${process.env.GMAIL_NODEMAILER}>`, // sender address
+      from: `"Administrador Power Gym 💪🏼" <${process.env.GMAIL_NODEMAILER}>`,
       to: `${email}`,
       subject: `Hola ${username}`,
       text: "",
@@ -91,7 +91,7 @@ const welcomeMessage = async (email, username) => {
 const newClientMessage = async (email, username) => {
   try {
     const info = await transporter.sendMail({
-      from: `"Administrador Power Gym 💪🏼" <${process.env.GMAIL_NODEMAILER}>`, // sender address
+      from: `"Administrador Power Gym 💪🏼" <${process.env.GMAIL_NODEMAILER}>`,
       to: `adminpowergym@yopmail.com`,
       subject: `Hola administrator`,
       text: "",
