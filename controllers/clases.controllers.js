@@ -104,6 +104,25 @@ const agregarReserva = async (req, res) => {
   }
 };
 
+const reservaCero = async (req, res) => {
+  try {
+    const clase = await ClasesModel.findById(req.params.id);
+    if (!clase) {
+      res.status(404).json({ message: "La clase no existe" });
+      return;
+    }
+    clase.reservas = 0;
+    await clase.save();
+    res.status(200).json({ message: "Reservas en cero con exito", clase });
+    return;
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "Error al volver a cero las reservas", error });
+  }
+};
+
 const consultarClasesCategoria = async (req, res) => {
   try {
     const clases = await ClasesModel.find({
@@ -156,6 +175,26 @@ const consultarClasesHabilitadas = async (req, res) => {
   }
 };
 
+const consultarClasesDia = async (req, res) => {
+  try {
+    const clases = await ClasesModel.find({ deleted: false });
+    if (!clases) {
+      return res.status(404).json({ message: "No se encontraron clases" });
+    }
+    diaBusqueda = req.params.dia;
+    const clasesDia = clases.filter((clase) => clase.dia === diaBusqueda);
+    if (!clasesDia) {
+      return res
+        .status(404)
+        .json({ message: "No se encontraron clases para el dia" });
+    }
+    res.status(200).json({ message: "Clases encontradas", clasesDia });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error al encontrar las clases", error });
+  }
+};
+
 module.exports = {
   consultarClasesCategoria,
   eliminarClase,
@@ -166,4 +205,6 @@ module.exports = {
   consultarUnaClase,
   agregarReserva,
   consultarClasesProfesor,
+  consultarClasesDia,
+  reservaCero,
 };
