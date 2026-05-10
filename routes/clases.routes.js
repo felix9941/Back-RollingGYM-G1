@@ -17,6 +17,40 @@ const {
 } = require("../controllers/clases.controllers");
 const router = express.Router();
 
+/**
+ * @swagger
+ * tags:
+ *   - name: Clases
+ *     description: Gestión de clases
+ */
+
+/**
+ * @swagger
+ * /api/clases:
+ *   get:
+ *     summary: Obtener todas las clases
+ *     tags: [Clases]
+ *     responses:
+ *       200:
+ *         description: Lista de clases
+ */
+/**
+ * @swagger
+ * /api/clases:
+ *   post:
+ *     summary: Crear una clase
+ *     tags: [Clases]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Clase'
+ *     responses:
+ *       200:
+ *         description: Clase creada
+ */
+
 router.put("/reserva/:id", agregarReserva);
 router.put("/cero/:id", reservaCero);
 router.get("/unaClase/:id", consultarUnaClase);
@@ -36,7 +70,7 @@ router.post(
     check("idProfesor", "Campo idProfesor vacio").notEmpty(),
     check("cupo", "Campo cupo vacio").notEmpty(),
   ],
-  crearClase
+  crearClase,
 );
 
 module.exports = router;

@@ -15,6 +15,46 @@ const {
 const obtenerDatos = require("../middleware/obtenerDatos");
 const router = express.Router();
 
+/**
+ * @swagger
+ * tags:
+ *   - name: Administradores
+ *     description: Gestión de administradores
+ */
+
+/**
+ * @swagger
+ * /api/administradores/register:
+ *   post:
+ *     summary: Registrar administrador
+ *     tags: [Administradores]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Administrador'
+ *     responses:
+ *       200:
+ *         description: Administrador registrado
+ */
+/**
+ * @swagger
+ * /api/administradores/login:
+ *   post:
+ *     summary: Login de administrador
+ *     tags: [Administradores]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Login'
+ *     responses:
+ *       200:
+ *         description: Login exitoso
+ */
+
 router.put(
   "/editar/:id",
   [
@@ -26,7 +66,7 @@ router.put(
     check("apellido", "Campo apellido vacío").notEmpty(),
     check(
       "apellido",
-      "El apellido debe tener entre 2 y 50 caracteres"
+      "El apellido debe tener entre 2 y 50 caracteres",
     ).isLength({
       min: 2,
       max: 50,
@@ -43,7 +83,7 @@ router.put(
       max: 10,
     }),
   ],
-  actualizarAdministrador
+  actualizarAdministrador,
 );
 
 router.put(
@@ -57,7 +97,7 @@ router.put(
     check("apellido", "Campo apellido vacío").notEmpty(),
     check(
       "apellido",
-      "El apellido debe tener entre 2 y 50 caracteres"
+      "El apellido debe tener entre 2 y 50 caracteres",
     ).isLength({
       min: 2,
       max: 50,
@@ -76,11 +116,11 @@ router.put(
     check("contrasenia", "Campo contraseña vacio").notEmpty(),
     check(
       "contrasenia",
-      "La contraseña debe tener entre 8 y 50 caracteres"
+      "La contraseña debe tener entre 8 y 50 caracteres",
     ).isLength({ min: 8, max: 50 }),
     check(
       "contrasenia",
-      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres"
+      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres",
     ).isStrongPassword({
       minLength: 8,
       maxLength: 100,
@@ -90,7 +130,7 @@ router.put(
       minSymbols: 1,
     }),
   ],
-  actualizarDatosPropios
+  actualizarDatosPropios,
 );
 
 router.get("/habilitados", consultarAdministradoresHabilitados);
@@ -108,7 +148,7 @@ router.post(
     check("apellido", "Campo apellido vacío").notEmpty(),
     check(
       "apellido",
-      "El apellido debe tener entre 2 y 50 caracteres"
+      "El apellido debe tener entre 2 y 50 caracteres",
     ).isLength({
       min: 2,
       max: 50,
@@ -127,11 +167,11 @@ router.post(
     check("contrasenia", "Campo contraseña vacio").notEmpty(),
     check(
       "contrasenia",
-      "La contraseña debe tener entre 8 y 50 caracteres"
+      "La contraseña debe tener entre 8 y 50 caracteres",
     ).isLength({ min: 8, max: 50 }),
     check(
       "contrasenia",
-      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres"
+      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres",
     ).isStrongPassword({
       minLength: 8,
       maxLength: 100,
@@ -141,7 +181,7 @@ router.post(
       minSymbols: 1,
     }),
   ],
-  registroAdministrador
+  registroAdministrador,
 );
 router.put("/:id", cambioEstadoAdministrador);
 router.delete("/:id", eliminarAdministrador);

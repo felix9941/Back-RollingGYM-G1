@@ -1,0 +1,184 @@
+openapi: 3.0.0
+info:
+  title: Rolling GYM API
+  version: "1.0.0"
+  description: Documentación de la API de Rolling GYM
+servers:
+  - url: http://localhost:3002
+components:
+  schemas:
+    Cliente:
+      type: object
+      properties:
+        nombre:
+          type: string
+        apellido:
+          type: string
+        email:
+          type: string
+          format: email
+        telefono:
+          type: string
+        contrasenia:
+          type: string
+        plan:
+          type: string
+        expiracionCuota:
+          type: string
+          format: date
+      required: [nombre, apellido, email, telefono, contrasenia]
+      example:
+        nombre: Juan
+        apellido: Pérez
+        email: juan.perez@example.com
+        telefono: "1122334455"
+        contrasenia: Passw0rd!
+
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        contrasenia:
+          type: string
+      required: [email, contrasenia]
+      example:
+        email: juan.perez@example.com
+        contrasenia: Passw0rd!
+
+    Profesor:
+      type: object
+      properties:
+        nombre:
+          type: string
+        apellido:
+          type: string
+        email:
+          type: string
+          format: email
+        telefono:
+          type: string
+        contrasenia:
+          type: string
+        foto:
+          type: string
+          format: binary
+      required: [nombre, apellido, email, telefono, contrasenia]
+      example:
+        nombre: Ana
+        apellido: Gomez
+        email: ana.gomez@example.com
+        telefono: "1199988877"
+
+    Administrador:
+      type: object
+      properties:
+        nombre:
+          type: string
+        apellido:
+          type: string
+        email:
+          type: string
+          format: email
+        telefono:
+          type: string
+        contrasenia:
+          type: string
+      required: [nombre, apellido, email, telefono, contrasenia]
+      example:
+        nombre: Admin
+        apellido: User
+        email: admin@example.com
+        telefono: "117776655"
+
+    Plan:
+      type: object
+      properties:
+        nombre:
+          type: string
+        precio:
+          type: number
+        duracion:
+          type: string
+        categorias:
+          type: array
+          items:
+            type: string
+      required: [nombre, precio]
+      example:
+        nombre: Mensual
+        precio: 5000
+        duracion: "30 días"
+
+    Categoria:
+      type: object
+      properties:
+        nombre:
+          type: string
+        descripcion:
+          type: string
+        foto:
+          type: string
+          format: binary
+      required: [nombre]
+      example:
+        nombre: Crossfit
+        descripcion: Entrenamiento funcional
+
+    Clase:
+      type: object
+      properties:
+        dia:
+          type: string
+        hora:
+          type: string
+        categoria:
+          type: string
+        idProfesor:
+          type: string
+        cupo:
+          type: integer
+      required: [dia, hora, categoria, idProfesor, cupo]
+      example:
+        dia: Lunes
+        hora: "18:00"
+        categoria: Crossfit
+        idProfesor: 60df...
+        cupo: 20
+
+    Producto:
+      type: object
+      properties:
+        nombre:
+          type: string
+        precio:
+          type: number
+        stock:
+          type: integer
+        descripcion:
+          type: string
+        foto:
+          type: string
+          format: binary
+      required: [nombre, precio]
+      example:
+        nombre: Proteína
+        precio: 2500
+        stock: 10
+
+    Reserva:
+      type: object
+      properties:
+        idClase:
+          type: string
+        idCliente:
+          type: string
+        fecha:
+          type: string
+          format: date
+      required: [idClase]
+      example:
+        idClase: 60df...
+        idCliente: 60ab...
+        fecha: "2026-05-03"

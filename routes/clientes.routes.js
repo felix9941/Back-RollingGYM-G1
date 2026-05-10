@@ -16,6 +16,56 @@ const {
   traerDatosCliente,
 } = require("../controllers/clientes.controllers");
 const router = express.Router();
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Clientes
+ *     description: Gestión de clientes
+ */
+
+/**
+ * @swagger
+ * /api/clientes/register:
+ *   post:
+ *     summary: Registrar cliente
+ *     tags: [Clientes]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Cliente'
+ *     responses:
+ *       200:
+ *         description: Cliente registrado
+ */
+/**
+ * @swagger
+ * /api/clientes/login:
+ *   post:
+ *     summary: Login de cliente
+ *     tags: [Clientes]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Login'
+ *     responses:
+ *       200:
+ *         description: Login exitoso
+ */
+/**
+ * @swagger
+ * /api/clientes:
+ *   get:
+ *     summary: Obtener todos los clientes
+ *     tags: [Clientes]
+ *     responses:
+ *       200:
+ *         description: Lista de clientes
+ */
 const obtenerDatos = require("../middleware/obtenerDatos");
 const datosCliente = require("../middleware/datosCliente");
 
@@ -30,7 +80,7 @@ router.put(
     check("apellido", "Campo apellido vacio").notEmpty(),
     check(
       "apellido",
-      "El apellido debe tener entre 2 y 50 caracteres"
+      "El apellido debe tener entre 2 y 50 caracteres",
     ).isLength({ min: 2, max: 50 }),
     check("email", "Campo email vacio").notEmpty(),
     check("email", "El email debe tener entre 10 y 70 caracteres").isLength({
@@ -40,13 +90,13 @@ router.put(
     check("telefono", "Campo telefono vacio").notEmpty(),
     check(
       "telefono",
-      "El telefono es incorrecto, debe tener 10 digitos"
+      "El telefono es incorrecto, debe tener 10 digitos",
     ).isLength({
       min: 10,
       max: 10,
     }),
   ],
-  editarCliente
+  editarCliente,
 );
 router.put("/estado/:id", cambioEstadoCliente);
 router.put(
@@ -55,7 +105,7 @@ router.put(
     check("plan", "Campo plan vacio").notEmpty(),
     check("expiracionCuota", "Campo expiracionCuota vacio").notEmpty(),
   ],
-  pagoCuotaCliente
+  pagoCuotaCliente,
 );
 router.put("/vencimiento/:id", vencimientoCuotaCliente);
 router.post(
@@ -69,7 +119,7 @@ router.post(
     check("apellido", "Campo apellido vacio").notEmpty(),
     check(
       "apellido",
-      "El apellido debe tener entre 2 y 50 caracteres"
+      "El apellido debe tener entre 2 y 50 caracteres",
     ).isLength({ min: 2, max: 50 }),
     check("email", "Campo email vacio").notEmpty(),
     check("email", "El email debe tener entre 10 y 70 caracteres").isLength({
@@ -79,7 +129,7 @@ router.post(
     check("telefono", "Campo telefono vacio").notEmpty(),
     check(
       "telefono",
-      "El telefono es incorrecto, debe tener 10 digitos"
+      "El telefono es incorrecto, debe tener 10 digitos",
     ).isLength({
       min: 10,
       max: 10,
@@ -87,11 +137,11 @@ router.post(
     check("contrasenia", "Campo contraseña vacio").notEmpty(),
     check(
       "contrasenia",
-      "La contraseña debe tener entre 8 y 50 caracteres"
+      "La contraseña debe tener entre 8 y 50 caracteres",
     ).isLength({ min: 8, max: 50 }),
     check(
       "contrasenia",
-      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres"
+      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres",
     ).isStrongPassword({
       minLength: 8,
       maxLength: 100,
@@ -101,7 +151,7 @@ router.post(
       minSymbols: 1,
     }),
   ],
-  registroCliente
+  registroCliente,
 );
 router.get("/datos", datosCliente(), traerDatosCliente);
 router.post("/login", loginCliente);
@@ -117,7 +167,7 @@ router.put(
     check("apellido", "Campo apellido vacío").notEmpty(),
     check(
       "apellido",
-      "El apellido debe tener entre 2 y 50 caracteres"
+      "El apellido debe tener entre 2 y 50 caracteres",
     ).isLength({
       min: 2,
       max: 50,
@@ -136,11 +186,11 @@ router.put(
     check("contrasenia", "Campo contraseña vacio").notEmpty(),
     check(
       "contrasenia",
-      "La contraseña debe tener entre 8 y 50 caracteres"
+      "La contraseña debe tener entre 8 y 50 caracteres",
     ).isLength({ min: 8, max: 50 }),
     check(
       "contrasenia",
-      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres"
+      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres",
     ).isStrongPassword({
       minLength: 8,
       maxLength: 100,
@@ -150,7 +200,7 @@ router.put(
       minSymbols: 1,
     }),
   ],
-  actualizarDatosPropios
+  actualizarDatosPropios,
 );
 
 router.get("/datosUsuario", obtenerDatos(), obtenerDatosUsuario);

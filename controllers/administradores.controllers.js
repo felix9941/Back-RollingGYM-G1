@@ -1,7 +1,7 @@
 const ClientesModel = require("../models/clientesSchema");
 const ProfesoresModel = require("../models/profesoresSchema");
 const AdministradoresModel = require("../models/administradoresSchema");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const { welcomeMessage } = require("../middleware/messages");
@@ -68,7 +68,7 @@ const registroAdministrador = async (req, res) => {
     newAdministrador.contrasenia = bcrypt.hashSync(req.body.contrasenia, salt);
     const messageResponse = await welcomeMessage(
       newAdministrador.email,
-      newAdministrador.nombre
+      newAdministrador.nombre,
     );
     if (messageResponse === 200) {
       await newAdministrador.save();
@@ -100,7 +100,7 @@ const loginAdministrador = async (req, res) => {
 
     const validContrasenia = await bcrypt.compare(
       req.body.contrasenia,
-      administradorExist.contrasenia
+      administradorExist.contrasenia,
     );
 
     if (!validContrasenia) {
@@ -167,7 +167,7 @@ const actualizarAdministrador = async (req, res) => {
     const administrador = await AdministradoresModel.findByIdAndUpdate(
       req.params.id,
       { nombre, apellido, email, telefono },
-      { new: true }
+      { new: true },
     );
     if (!administrador) {
       return res.status(404).json({ message: "Administrador no encontrado" });
@@ -198,7 +198,7 @@ const actualizarDatosPropios = async (req, res) => {
     const administrador = await AdministradoresModel.findByIdAndUpdate(
       req.params.id,
       { nombre, apellido, email, telefono, contrasenia: contraseniaEncriptada },
-      { new: true }
+      { new: true },
     );
 
     if (!administrador) {
@@ -220,7 +220,7 @@ const actualizarDatosPropios = async (req, res) => {
 const eliminarAdministrador = async (req, res) => {
   try {
     const administrador = await AdministradoresModel.findByIdAndDelete(
-      req.params.id
+      req.params.id,
     );
     if (!administrador) {
       return res.status(404).json({ message: "Administrador no encontrado" });

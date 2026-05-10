@@ -2,7 +2,7 @@ const ClientesModel = require("../models/clientesSchema");
 const ProfesoresModel = require("../models/profesoresSchema");
 const AdministradoresModel = require("../models/administradoresSchema");
 const cloudinary = require("../middleware/cloudinary");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const { welcomeMessage } = require("../middleware/messages");
@@ -83,7 +83,7 @@ const registroProfesor = async (req, res) => {
 
     const messageResponse = await welcomeMessage(
       newProfesor.email,
-      newProfesor.nombre
+      newProfesor.nombre,
     );
     if (messageResponse === 200) {
       await newProfesor.save();
@@ -114,7 +114,7 @@ const loginProfesor = async (req, res) => {
 
     const validContrasenia = await bcrypt.compare(
       req.body.contrasenia,
-      profesorExist.contrasenia
+      profesorExist.contrasenia,
     );
 
     if (!validContrasenia) {
@@ -282,7 +282,7 @@ const actualizarDatosPropios = async (req, res) => {
     const profesor = await ProfesoresModel.findByIdAndUpdate(
       req.params.id,
       { nombre, apellido, email, telefono, contrasenia: contraseniaEncriptada },
-      { new: true }
+      { new: true },
     );
 
     if (!profesor) {

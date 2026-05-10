@@ -2,7 +2,7 @@ const ClientesModel = require("../models/clientesSchema");
 const ProfesoresModel = require("../models/profesoresSchema");
 const AdministradoresModel = require("../models/administradoresSchema");
 const ReservasModel = require("../models/reservasSchema");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const { welcomeMessage, newClientMessage } = require("../middleware/messages");
@@ -72,11 +72,11 @@ const registroCliente = async (req, res) => {
     newCliente.contrasenia = bcrypt.hashSync(req.body.contrasenia, salt);
     const messageResponse = await welcomeMessage(
       newCliente.email,
-      newCliente.nombre
+      newCliente.nombre,
     );
     const messageResponse2 = await newClientMessage(
       newCliente.email,
-      newCliente.nombre
+      newCliente.nombre,
     );
     if (messageResponse === 200 && messageResponse2 === 200) {
       await newReservas.save();
@@ -102,7 +102,7 @@ const loginCliente = async (req, res) => {
 
     const validContrasenia = await bcrypt.compare(
       req.body.contrasenia,
-      clienteExist.contrasenia
+      clienteExist.contrasenia,
     );
 
     if (!validContrasenia) {
@@ -175,7 +175,7 @@ const pagoCuotaCliente = async (req, res) => {
         plan,
         expiracionCuota: expiracionCuotaMilisegundos,
       },
-      { new: true }
+      { new: true },
     );
     res
       .status(201)
@@ -195,7 +195,7 @@ const vencimientoCuotaCliente = async (req, res) => {
       {
         plan: "Ninguno",
       },
-      { new: true }
+      { new: true },
     );
     res
       .status(201)
@@ -215,7 +215,7 @@ const eliminarCliente = async (req, res) => {
     const idReserva = cliente.idReservas;
     const reservaEliminada = await ReservasModel.findByIdAndDelete(idReserva);
     const clienteEliminado = await ClientesModel.findByIdAndDelete(
-      req.params.id
+      req.params.id,
     );
     if (!clienteEliminado) {
       return res.status(404).json({ message: "Cliente no encontrado" });
@@ -248,7 +248,7 @@ const editarCliente = async (req, res) => {
         email,
         telefono,
       },
-      { new: true }
+      { new: true },
     );
     res.status(201).json({ message: "Cliente actualizado", updatedCliente });
   } catch (error) {
@@ -292,7 +292,7 @@ const actualizarDatosPropios = async (req, res) => {
     const cliente = await ClientesModel.findByIdAndUpdate(
       req.params.id,
       { nombre, apellido, email, telefono, contrasenia: contraseniaEncriptada },
-      { new: true }
+      { new: true },
     );
 
     if (!cliente) {

@@ -14,6 +14,46 @@ const {
   actualizarDatosPropios,
 } = require("../controllers/profesores.controllers");
 const router = express.Router();
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Profesores
+ *     description: Gestión de profesores
+ */
+
+/**
+ * @swagger
+ * /api/profesores/register:
+ *   post:
+ *     summary: Registrar profesor
+ *     tags: [Profesores]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/Profesor'
+ *     responses:
+ *       200:
+ *         description: Profesor registrado
+ */
+/**
+ * @swagger
+ * /api/profesores/login:
+ *   post:
+ *     summary: Login de profesor
+ *     tags: [Profesores]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Login'
+ *     responses:
+ *       200:
+ *         description: Login exitoso
+ */
 const obtenerDatos = require("../middleware/obtenerDatos");
 
 router.get("/habilitados", consultarProfesoresHabilitados);
@@ -29,7 +69,7 @@ router.post(
     check("apellido", "Campo apellido vacío").notEmpty(),
     check(
       "apellido",
-      "El apellido debe tener entre 2 y 50 caracteres"
+      "El apellido debe tener entre 2 y 50 caracteres",
     ).isLength({
       min: 2,
       max: 50,
@@ -48,11 +88,11 @@ router.post(
     check("contrasenia", "Campo contraseña vacio").notEmpty(),
     check(
       "contrasenia",
-      "La contraseña debe tener entre 8 y 50 caracteres"
+      "La contraseña debe tener entre 8 y 50 caracteres",
     ).isLength({ min: 8, max: 50 }),
     check(
       "contrasenia",
-      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres"
+      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres",
     ).isStrongPassword({
       minLength: 8,
       maxLength: 100,
@@ -63,7 +103,7 @@ router.post(
     }),
   ],
   multer.single("foto"),
-  registroProfesor
+  registroProfesor,
 );
 router.put("/estadoProfesor/:id", cambioEstadoProfesor);
 router.put(
@@ -77,7 +117,7 @@ router.put(
     check("apellido", "Campo apellido vacío").notEmpty(),
     check(
       "apellido",
-      "El apellido debe tener entre 2 y 50 caracteres"
+      "El apellido debe tener entre 2 y 50 caracteres",
     ).isLength({
       min: 2,
       max: 50,
@@ -95,7 +135,7 @@ router.put(
     }),
   ],
   multer.single("foto"),
-  actualizarProfesor
+  actualizarProfesor,
 );
 
 router.put(
@@ -109,7 +149,7 @@ router.put(
     check("apellido", "Campo apellido vacío").notEmpty(),
     check(
       "apellido",
-      "El apellido debe tener entre 2 y 50 caracteres"
+      "El apellido debe tener entre 2 y 50 caracteres",
     ).isLength({
       min: 2,
       max: 50,
@@ -128,11 +168,11 @@ router.put(
     check("contrasenia", "Campo contraseña vacio").notEmpty(),
     check(
       "contrasenia",
-      "La contraseña debe tener entre 8 y 50 caracteres"
+      "La contraseña debe tener entre 8 y 50 caracteres",
     ).isLength({ min: 8, max: 50 }),
     check(
       "contrasenia",
-      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres"
+      "La contraseña debe contener numeros, simbolos, letras mayusculas y minusculas, y un minimo de 8 caracteres",
     ).isStrongPassword({
       minLength: 8,
       maxLength: 100,
@@ -142,7 +182,7 @@ router.put(
       minSymbols: 1,
     }),
   ],
-  actualizarDatosPropios
+  actualizarDatosPropios,
 );
 
 router.get("/datosUsuario", obtenerDatos(), obtenerDatosUsuario);

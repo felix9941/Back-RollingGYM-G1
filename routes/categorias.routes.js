@@ -13,6 +13,40 @@ const auth = require("../middleware/auth");
 const { check } = require("express-validator");
 const multer = require("../middleware/multer");
 const router = express.Router();
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Categorias
+ *     description: Gestión de categorías
+ */
+
+/**
+ * @swagger
+ * /api/categorias:
+ *   get:
+ *     summary: Obtener todas las categorías
+ *     tags: [Categorias]
+ *     responses:
+ *       200:
+ *         description: Lista de categorías
+ */
+/**
+ * @swagger
+ * /api/categorias:
+ *   post:
+ *     summary: Crear una categoría
+ *     tags: [Categorias]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/Categoria'
+ *     responses:
+ *       200:
+ *         description: Categoría creada
+ */
 const obtenerPlan = require("../middleware/obtenerPlan");
 
 router.put("/cambioEstadoCategoria/:id", CambioEstadoCategoria);
