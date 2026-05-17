@@ -51,11 +51,11 @@ const ObtenerCategoriasPorPlan = async (req, res) => {
       categoria = categoriasHabilitadas;
     } else if (plan === "Plan Clases") {
       categoria = categoriasHabilitadas.filter((cat) =>
-        cat.idPlanes.some((id) => id.toString() === "66677b6f5b741422f3a2fee0")
+        cat.idPlanes.some((id) => id.toString() === "66677b6f5b741422f3a2fee0"),
       );
     } else if (plan === "Plan Aparatos") {
       categoria = categoriasHabilitadas.filter((cat) =>
-        cat.idPlanes.some((id) => id.toString() === "66677b045b741422f3a2fede")
+        cat.idPlanes.some((id) => id.toString() === "66677b045b741422f3a2fede"),
       );
     }
 
@@ -105,7 +105,12 @@ const CargarCategoria = async (req, res) => {
 
 const ActualizarCategoria = async (req, res) => {
   try {
-    const { nombre, idPlanes } = req.body;
+    let { nombre, idPlanes } = req.body;
+    if (typeof idPlanes === "string") {
+      try {
+        idPlanes = JSON.parse(idPlanes);
+      } catch (e) {}
+    }
     let updateData = { nombre, idPlanes };
     if (req.file) {
       const file = req.file;
@@ -121,7 +126,7 @@ const ActualizarCategoria = async (req, res) => {
     const categoriaActualizada = await CategoriasModel.findByIdAndUpdate(
       req.params.id,
       updateData,
-      { new: true }
+      { new: true },
     );
     if (!categoriaActualizada) {
       return res
@@ -193,7 +198,7 @@ const ObtenerCategoriasPorPlanId = async (req, res) => {
     }
 
     const categoria = categoriasHabilitadas.filter((cat) =>
-      cat.idPlanes.some((id) => id.toString() === planId)
+      cat.idPlanes.some((id) => id.toString() === planId),
     );
 
     if (!categoria || categoria.length === 0) {
