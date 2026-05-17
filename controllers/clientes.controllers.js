@@ -62,29 +62,42 @@ const registroCliente = async (req, res) => {
       email: req.body.email,
     });
     if (clienteExists || adminExists || profeExists) {
-      res.status(409).json({ message: "El email ya esta registrado" });
-      return;
+      return res.status(409).json({ message: "El email ya esta registrado" });
     }
     const newCliente = new ClientesModel(req.body);
     const newReservas = ReservasModel({ idCliente: newCliente._id });
     const salt = bcrypt.genSaltSync(10);
     newCliente.idReservas = newReservas._id;
     newCliente.contrasenia = bcrypt.hashSync(req.body.contrasenia, salt);
-    const messageResponse = await welcomeMessage(
-      newCliente.email,
-      newCliente.nombre,
-    );
-    const messageResponse2 = await newClientMessage(
-      newCliente.email,
-      newCliente.nombre,
-    );
-    if (messageResponse === 200 && messageResponse2 === 200) {
-      await newReservas.save();
-      await newCliente.save();
-      res.status(200).json({ message: "Cliente creado con exito", newCliente });
-    } else {
-      res.status(500).json({ message: "Error nodemailer", error });
+
+    // Guardar usuario y reservas primero
+    await newReservas.save();
+    await newCliente.save();
+
+    // Intentar enviar emails, pero no bloquear el registro si fallan
+    let emailWarning = null;
+    try {
+      const messageResponse = await welcomeMessage(
+        newCliente.email,
+        newCliente.nombre,
+      );
+      const messageResponse2 = await newClientMessage(
+        newCliente.email,
+        newCliente.nombre,
+      );
+      if (messageResponse !== 200 || messageResponse2 !== 200) {
+        emailWarning = "No se pudo enviar uno o ambos emails de bienvenida.";
+      }
+    } catch (emailError) {
+      console.log("Error enviando email de bienvenida:", emailError);
+      emailWarning = "No se pudo enviar el email de bienvenida.";
     }
+
+    res.status(200).json({
+      message: "Cliente creado con exito",
+      newCliente,
+      emailWarning,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "No se puede crear el cliente" });
