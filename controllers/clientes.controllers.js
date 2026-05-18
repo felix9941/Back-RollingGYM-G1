@@ -64,6 +64,23 @@ const registroCliente = async (req, res) => {
     if (clienteExists || adminExists || profeExists) {
       return res.status(409).json({ message: "El email ya esta registrado" });
     }
+    const mismoNombreApellido = await ClientesModel.findOne({
+      nombre: req.body.nombre,
+      apellido: req.body.apellido,
+    });
+    if (mismoNombreApellido) {
+      return res.status(409).json({
+        message: "Ya existe un cliente con el mismo nombre y apellido.",
+      });
+    }
+    const mismoTelefono = await ClientesModel.findOne({
+      telefono: req.body.telefono,
+    });
+    if (mismoTelefono) {
+      return res.status(409).json({
+        message: "Ya existe un cliente con el mismo teléfono.",
+      });
+    }
     const newCliente = new ClientesModel(req.body);
     const newReservas = ReservasModel({ idCliente: newCliente._id });
     const salt = bcrypt.genSaltSync(10);
