@@ -1,5 +1,26 @@
 const ClasesModel = require("../models/clasesSchema");
+const ReservasModel = require("../models/reservasSchema");
 const { validationResult } = require("express-validator");
+
+const mapearClasesConReservasReales = async (clases) => {
+  const reservas = await ReservasModel.find({}, { clases: 1, _id: 0 });
+  const contadorReservas = {};
+
+  reservas.forEach((reserva) => {
+    (reserva.clases || []).forEach((idClase) => {
+      const key = idClase.toString();
+      contadorReservas[key] = (contadorReservas[key] || 0) + 1;
+    });
+  });
+
+  return clases.map((clase) => {
+    const reservasReales = contadorReservas[clase._id.toString()] || 0;
+    return {
+      ...clase.toObject(),
+      reservas: reservasReales,
+    };
+  });
+};
 
 const crearClase = async (req, res) => {
   const errors = validationResult(req);
@@ -36,7 +57,12 @@ const consultarClases = async (req, res) => {
     if (!clases) {
       return res.status(404).json({ message: "No se encontraron clases" });
     }
-    res.status(200).json({ message: "Clases encontradas", clases });
+    const clasesConReservasActualizadas =
+      await mapearClasesConReservasReales(clases);
+
+    res
+      .status(200)
+      .json({ message: "Clases encontradas", clases: clasesConReservasActualizadas });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error al encontrar las clases", error });
@@ -87,17 +113,14 @@ const agregarReserva = async (req, res) => {
       res.status(404).json({ message: "La clase no existe" });
       return;
     }
-    if (clase.reservas < clase.cupo) {
-      clase.reservas++;
-      await clase.save();
-      res.status(200).json({ message: "Reserva agregada con exito", clase });
-      return;
-    } else if (clase.reservas >= clase.cupo) {
-      res.status(400).json({
-        message: "La clase esta llena, no se pudo agregar la reserva",
-      });
-      return;
-    }
+    // Sincroniza reservas contra la coleccion reservas para evitar dobles conteos.
+    const reservasReales = await ReservasModel.countDocuments({
+      clases: clase._id,
+    });
+    clase.reservas = reservasReales;
+    await clase.save();
+
+    res.status(200).json({ message: "Reserva sincronizada con exito", clase });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error al generar la reserva", error });
@@ -134,9 +157,12 @@ const consultarClasesCategoria = async (req, res) => {
         .status(404)
         .json({ message: "No se encontraron clases de esa categoria" });
     }
+    const clasesConReservasActualizadas =
+      await mapearClasesConReservasReales(clases);
+
     res.status(200).json({
       message: `Clases de ${req.params.categoria} encontradas`,
-      clases,
+      clases: clasesConReservasActualizadas,
     });
   } catch (error) {
     console.log(error);
