@@ -5,7 +5,11 @@ const ReservasModel = require("../models/reservasSchema");
 const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
-const { welcomeMessage, newClientMessage } = require("../middleware/messages");
+const {
+  welcomeMessage,
+  newClientMessage,
+  habilitacionMessage,
+} = require("../middleware/messages");
 
 const traerDatosCliente = async (req, res) => {
   const plan = req.plan;
@@ -98,9 +102,15 @@ const registroCliente = async (req, res) => {
         newCliente.email,
         newCliente.nombre,
       );
+      // Obtener todos los administradores habilitados
+      const admins = await AdministradoresModel.find({ deleted: false });
+      const adminEmails = admins.map((a) => a.email);
+      // Enviar el correo a todos los administradores
       const messageResponse2 = await newClientMessage(
-        newCliente.email,
+        adminEmails,
         newCliente.nombre,
+        newCliente.email,
+        newCliente.telefono,
       );
       if (messageResponse !== 200 || messageResponse2 !== 200) {
         emailWarning = "No se pudo enviar uno o ambos emails de bienvenida.";
@@ -207,6 +217,9 @@ const pagoCuotaCliente = async (req, res) => {
       },
       { new: true },
     );
+    if (updatedCliente) {
+      await habilitacionMessage(updatedCliente.email, updatedCliente.nombre);
+    }
     res
       .status(201)
       .json({ message: "Vencimiento y Plan actualizados", updatedCliente });

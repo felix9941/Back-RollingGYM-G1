@@ -65,13 +65,14 @@ const welcomeMessage = async (email, username) => {
           </div>
           <div class="content">
             <h2>Hola, ${username}!</h2>
+            <p>ESTOY PROBANDO NO ASUSTAR jaja(me quede sin gmail para probar)</p>
             <p>Estamos emocionados de tenerte en Power Gym. Esperamos que disfrutes de nuestros servicios y que tengas una excelente experiencia.</p>
-            <p>Tu cuenta sera habilitada por un administrador lo antes posible</p>
+            <p>Tu cuenta sera habilitada por un administrador lo antes posible, por lo que se te enviara otro correo de confirmación.</p>
             <p>Si tienes alguna pregunta o necesitas ayuda, no dudes en ponerte en contacto con nosotros.</p>
             <p>¡Gracias por unirte!</p>
           </div>
           <div class="footer">
-            <p>© 2024 Power Gym. Todos los derechos reservados.</p>
+            <p>© 2026 Power Gym. Todos los derechos reservados.</p>
           </div>
         </div>
       </body>
@@ -88,13 +89,12 @@ const welcomeMessage = async (email, username) => {
   }
 };
 
-const newClientMessage = async (email, username) => {
+const newClientMessage = async (emails, nombre, emailCliente, telefono) => {
   try {
     const info = await transporter.sendMail({
       from: `"Administrador Power Gym 💪🏼" <${process.env.GMAIL_NODEMAILER}>`,
-      to: `adminpowergym@yopmail.com`,
-      subject: `Hola administrator`,
-      text: "",
+      to: emails,
+      subject: `Nuevo cliente registrado: ${nombre}`,
       html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -144,23 +144,55 @@ const newClientMessage = async (email, username) => {
             font-size: 12px;
             color: #777;
           }
+          .info-list {
+            list-style: none;
+            padding: 0;
+          }
+          .info-list li {
+            margin-bottom: 8px;
+          }
         </style>
       </head>
       <body>
         <div class="container">
           <div class="header">
-            <h1>Hay un nuevo cliente esperando a ser aceptado</h1>
+            <h1>Nuevo cliente esperando habilitación</h1>
           </div>
           <div class="content">
-            <p>El usuario ${username} con email: ${email} esta esperando ser aceptado</p>
+            <h2>Datos del cliente registrado:</h2>
+            <ul class="info-list">
+              <li><b>Nombre:</b> ${nombre}</li>
+              <li><b>Email:</b> ${emailCliente}</li>
+              <li><b>Teléfono:</b> ${telefono}</li>
+            </ul>
+            <p>Por favor, revisa y habilita al cliente desde el panel de administración.</p>
           </div>
           <div class="footer">
-            <p>© 2024 Power Gym. Todos los derechos reservados.</p>
+            <p>© 2026 Power Gym. Todos los derechos reservados.</p>
           </div>
         </div>
       </body>
       </html>
-    `,
+      `,
+    });
+    if (info.response.includes("OK")) {
+      return 200;
+    } else {
+      return 500;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const habilitacionMessage = async (email, username) => {
+  try {
+    const info = await transporter.sendMail({
+      from: `"Administrador Power Gym 💪🏼" <${process.env.GMAIL_NODEMAILER}>`,
+      to: `${email}`,
+      subject: `¡Tu cuenta ha sido habilitada!`,
+      html: `<p>Hola ${username}, tu cuenta ya está habilitada y puedes ingresar a Power Gym.</p>
+      <p>te debo $2274 por usar tu gmail</p>`,
     });
     if (info.response.includes("OK")) {
       return 200;
@@ -175,4 +207,5 @@ const newClientMessage = async (email, username) => {
 module.exports = {
   welcomeMessage,
   newClientMessage,
+  habilitacionMessage,
 };
